@@ -1,7 +1,7 @@
 
 
 BEGIN
-	FOR Lcntr IN 1..10
+	FOR Lcntr IN 1..5
 	LOOP
 		update SOURCE.SOURCE_TABLE1 set VERSION=VERSION+1 WHERE rowid = (select min(rowid) from SOURCE.SOURCE_TABLE1);
 		update SOURCE.SOURCE_TABLE2 set VERSION=VERSION+1 WHERE rowid = (select min(rowid) from SOURCE.SOURCE_TABLE2);

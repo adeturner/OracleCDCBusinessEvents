@@ -7,26 +7,28 @@ Goldengate for Big Data generates record by record events that can be streamed t
 
 This repo demonstrates an eventually consistent method to use Goldengate to generate a limited volume of whole transactionally consistent business events.
 
-## Setup database environment
+## 1. Setup database environment
 
 Follow 1_dockerSetup.md
 
-## Setup ogg environment
+## 2. Setup ogg environment
 
 Follow 2_oggSetup.md
 
-## Setup PoC
+## 3. Setup PoC environment
 
 Follow 3_pocSchemaSetup.md
 
-## Test the PoC
+## 4. Test the PoC
 
-### testdata_e2e1
+### 4.1 testdata_e2e1
 
-Expected output:
+Simulate insert 10 rows, insert 10 rows, update 10 rows, delete 10 rows
 
 ```code
 @testdata_e2e1
+
+Expected output:
 
 TARGET_TABLE1.PART_0=0
 TARGET_TABLE1.PART_2540814=10

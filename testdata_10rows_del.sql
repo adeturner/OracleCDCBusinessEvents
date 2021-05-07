@@ -1,7 +1,7 @@
 
 
 BEGIN
-	FOR Lcntr IN 1..10
+	FOR Lcntr IN 1..2
 	LOOP
 		delete from SOURCE.SOURCE_TABLE2 WHERE rowid = (select min(rowid) from SOURCE.SOURCE_TABLE2);
 		delete from SOURCE.SOURCE_TABLE3 WHERE rowid = (select min(rowid) from SOURCE.SOURCE_TABLE3);
