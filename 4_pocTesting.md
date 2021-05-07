@@ -19,7 +19,7 @@ select count(*) from target.target_table1@target_link partition (part_15);
 select * from target.partition_config;
 ```
 
-## PART_15 begin_scn=2334122 end_scn=2349797
+### PART_15 begin_scn=2334122 end_scn=2349797
 
 ```code
 with t1 as (select * from target.target_table1 partition (part_15)),
