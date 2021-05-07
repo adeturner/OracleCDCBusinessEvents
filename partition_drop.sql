@@ -51,3 +51,15 @@ BEGIN
   END LOOP;
 END;
 /
+
+/*
+alter table target.target_table1 add partition part_0a VALUES LESS THAN (maxvalue) TABLESPACE USERS;
+alter table target.target_table2 add partition part_0a VALUES LESS THAN (maxvalue) TABLESPACE USERS;
+alter table target.target_table3 add partition part_0a VALUES LESS THAN (maxvalue) TABLESPACE USERS;
+alter table target.target_table1 drop partition part_0;
+alter table target.target_table2 drop partition part_0;
+alter table target.target_table3 drop partition part_0;
+alter table target.target_table1 rename partition part_0a to part_0;
+alter table target.target_table2 rename partition part_0a to part_0;
+alter table target.target_table3 rename partition part_0a to part_0;
+*/
