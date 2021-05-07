@@ -1,5 +1,6 @@
 
 set serveroutput on lines 2000 pages 1000 trimspool on
+exec dbms_output.put_line(CHR(10));
 exec dbms_output.put_line( '*** partition_query.sql ***' );
 
 col table_owner form a20
@@ -10,6 +11,7 @@ from dba_tab_partitions
 where table_owner = 'TARGET'
 and table_name like 'TARGET_TABLE%';
 
+exec dbms_output.put_line(CHR(10));
 
 set serveroutput on
 DECLARE
