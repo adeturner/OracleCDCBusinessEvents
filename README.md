@@ -82,13 +82,13 @@ for each partition in partition config
 end
 ```
 
-## 1. Setup
+## Setup
 
 - Follow 1_dockerSetup.md
 - Follow 2_oggSetup.md
 - Follow 3_pocSchemaSetup.md
 
-### 4.1 End to End test
+### End to End test
 
 Execute poc_e2e.sql
 
