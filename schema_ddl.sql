@@ -88,6 +88,15 @@ create sequence target.partition_seq start with 1;
 -- ###############################################################################################
 -- ###############################################################################################
 
+CREATE TABLE TARGET.MASTER_SOURCE_TABLE1
+(
+ RID      ROWID,
+ SCNNO   NUMBER
+)
+PARTITION BY RANGE (SCNNO) 
+  (PARTITION part_0 VALUES LESS THAN (maxvalue) TABLESPACE USERS);
+
+/*
 CREATE TABLE TARGET.COPY_SOURCE_TABLE1
 (
  SCNNO   NUMBER,
@@ -119,5 +128,5 @@ CREATE TABLE TARGET.COPY_SOURCE_TABLE3
 )
 PARTITION BY RANGE (SCNNO) 
   (PARTITION part_0 VALUES LESS THAN (maxvalue) TABLESPACE USERS);
-
+*/
 

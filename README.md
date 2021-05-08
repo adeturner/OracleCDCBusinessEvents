@@ -55,6 +55,7 @@ for each partition in partition config
     for each target_tableN get the set {rid, max(scn) as target_scn}
 
         // join back up to get the business object master
+        
         insert into master_source_table
         select s1.rid, target_scn from source_table1 s1, source_tableN n wherre s1.pk = n.fk
 
@@ -66,6 +67,7 @@ for each partition in partition config
     // loop through the max scn for each business object
     select rid, max(scn) as max_scn from master_source_table
     loop 
+        
         select <business object> 
         from source_table1 s1 as of max_scn, 
         source_table1 s2 as of max_scn, 

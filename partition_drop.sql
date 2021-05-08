@@ -7,8 +7,7 @@ DECLARE
   CURSOR c1 IS 
     SELECT table_name, partition_name
     from dba_tab_partitions 
-    where table_owner = 'TARGET'
-    and (table_name like 'TARGET_TABLE%' or table_name like 'COPY_%');
+    where table_owner = 'TARGET';
   l_count number;
   l_name varchar2(2);
 BEGIN
@@ -34,15 +33,14 @@ DECLARE
   CURSOR c1 IS 
     SELECT table_name, partition_name
     from dba_tab_partitions 
-    where table_owner = 'TARGET'
-    and (table_name like 'TARGET_TABLE%' or table_name like 'COPY_%');
+    where table_owner = 'TARGET';
   l_count number;
   l_name varchar2(2);
 BEGIN
   FOR p IN c1
   LOOP
     begin
-        dbms_output.put_line( 'Renaming partition target_table1.' || p.partition_name);
+        dbms_output.put_line( 'Renaming partition ' || p.table_name || '.' || p.partition_name);
         if p.partition_name = 'PART_0' then
           EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' ADD PARTITION PART_0A VALUES LESS THAN (maxvalue) TABLESPACE USERS';
           EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' DROP PARTITION ' || p.partition_name;
