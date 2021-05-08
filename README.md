@@ -21,14 +21,14 @@ with any number of child tables linked by foreign keys:
 
 ... with immediate relatives
 
-    - CHILD TABLE  source_table2 s2 (s1.pk=s2.fk)
-    - CHILD TABLE  source_table3 s3 (s1.pk=s3.fk)
+    CHILD TABLE  source_table2 s2 (s1.pk=s2.fk)
+    CHILD TABLE  source_table3 s3 (s1.pk=s3.fk)
 
 ... and include nested, cascaded:
 
-    - CHILD TABLE  source_table4 s4 (s1.pk=s4.fk)
-    - CHILD TABLE  source_table5 s5 (s4.pk=s5.fk)
-    - CHILD TABLE  source_table6 s6 (s4.pk=s6.fk)
+    CHILD TABLE  source_table4 s4 (s1.pk=s4.fk)
+    CHILD TABLE  source_table5 s5 (s4.pk=s5.fk)
+    CHILD TABLE  source_table6 s6 (s4.pk=s6.fk)
 
 We use an eventually consistent approach, to minimise the number of records needed to be processed
 
