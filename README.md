@@ -38,19 +38,18 @@ We partition the OGG target tables by SCN range, and split on interval, e.g. 5, 
 
 This PoC presents the method for tables s1,s2,s3 above
 
-There appears to be a constraint with flashback query that SCN must be hard coded at parse time
-
-which implies row by row processing; the algorithm below offers optimisation to mitigate that.
+There appears to be a constraint with flashback query that SCN must be hard coded at parse time which implies row by row processing is required; the algorithm offers optimisation to mitigate that.
 
 ### Algorithm
 
 ```code
+
+// Through OGG we have tracked the changes at each table level within the business object
+// these are stored in TARGET.TARGET_TABLEn
+
 for each partition in partition config
 
-    // Through OGG we have tracked the changes at each table level within the business object
-    // these are stored in TARGET.TARGET_TABLEn
-
-    // Our next aim is tp generate a unique list of business object masters, i.e. source_table1 {rid, max(scn)}
+    // Our next aim is to generate a unique list of object masters, i.e. source_table1 {rid, max(scn)}
 
     // get the max scn for each row id (we only need the last one in the time period)
     for each target_tableN get the set {rid, max(scn) as target_scn}
