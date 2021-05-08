@@ -1,0 +1,286 @@
+
+
+*** testdata_e2e_test1.sql ***
+
+
+INFO test_reset: update poc_pkg...
+No errors.
+No errors.
+
+INFO test_reset: wait for OGG to start...
+INFO test_reset: reset source data
+
+
+*** source_deleteall.sql ***
+INFO test_reset: wait for OGG to catchup...
+INFO test_reset: split to get empty lead partition
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=2837443
+Max partition_config SCN=2835899
+Splitting COPY_SOURCE_TABLE2 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+Splitting TARGET_TABLE2 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+Splitting TARGET_TABLE3 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+Splitting TARGET_TABLE1 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+Splitting COPY_SOURCE_TABLE1 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+Splitting COPY_SOURCE_TABLE3 partition at SCN=2837443 with old partition=PART_2835899 and new partition=PART_2837443
+DML to partition_config are complete
+INFO test_reset: partition reset...
+
+
+*** partition_reset.sql ***
+
+
+*** partition_drop.sql ***
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_2834593
+Dropping partition target_table1.PART_2835282
+Dropping partition target_table1.PART_2835589
+Dropping partition target_table1.PART_2835899
+Renaming partition target_table1.PART_2837443
+Renaming partition target_table1.PART_2837443
+Renaming partition target_table1.PART_2837443
+Renaming partition target_table1.PART_2837443
+Renaming partition target_table1.PART_2837443
+Renaming partition target_table1.PART_2837443
+
+
+*** partition_config.sql ***
+
+
+
+MODULE_NAME          PARTITION_NAME        BEGIN_SCN    END_SCN
+-------------------- -------------------- ---------- ----------
+POC                  PART_0                        0
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               COPY_SOURCE_TABLE1   PART_0               MAXVALUE
+TARGET               COPY_SOURCE_TABLE2   PART_0               MAXVALUE
+TARGET               COPY_SOURCE_TABLE3   PART_0               MAXVALUE
+TARGET               TARGET_TABLE1        PART_0               MAXVALUE
+TARGET               TARGET_TABLE2        PART_0               MAXVALUE
+TARGET               TARGET_TABLE3        PART_0               MAXVALUE
+
+
+COPY_SOURCE_TABLE1.PART_0=0
+COPY_SOURCE_TABLE2.PART_0=0
+COPY_SOURCE_TABLE3.PART_0=0
+TARGET_TABLE1.PART_0=0
+TARGET_TABLE2.PART_0=0
+TARGET_TABLE3.PART_0=0
+INFO test_reset: split partition now to avoid writing to PART_0
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=2838112
+Max partition_config SCN=0
+Splitting COPY_SOURCE_TABLE2 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+Splitting TARGET_TABLE2 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+Splitting TARGET_TABLE3 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+Splitting TARGET_TABLE1 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+Splitting COPY_SOURCE_TABLE1 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+Splitting COPY_SOURCE_TABLE3 partition at SCN=2838112 with old partition=PART_0 and new partition=PART_2838112
+DML to partition_config are complete
+
+INFO test_reset: wait for OGG to start...
+INFO test_data: insert 10 rows
+testdata_10rows_ins: rows inserted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=2838799
+Max partition_config SCN=2838112
+Splitting COPY_SOURCE_TABLE2 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+Splitting TARGET_TABLE2 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+Splitting TARGET_TABLE3 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+Splitting TARGET_TABLE1 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+Splitting COPY_SOURCE_TABLE1 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+Splitting COPY_SOURCE_TABLE3 partition at SCN=2838799 with old partition=PART_2838112 and new partition=PART_2838799
+DML to partition_config are complete
+INFO test_data: insert 10 rows
+testdata_10rows_ins: rows inserted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=2839107
+Max partition_config SCN=2838799
+Splitting COPY_SOURCE_TABLE2 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+Splitting TARGET_TABLE2 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+Splitting TARGET_TABLE3 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+Splitting TARGET_TABLE1 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+Splitting COPY_SOURCE_TABLE1 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+Splitting COPY_SOURCE_TABLE3 partition at SCN=2839107 with old partition=PART_2838799 and new partition=PART_2839107
+DML to partition_config are complete
+INFO test_data: update 10 rows
+testdata_10rows_upd: rows updated ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: delete 10 child rows
+testdata_10rows_del: rows deleted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=2839417
+Max partition_config SCN=2839107
+Splitting COPY_SOURCE_TABLE2 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+Splitting TARGET_TABLE2 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+Splitting TARGET_TABLE3 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+Splitting TARGET_TABLE1 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+Splitting COPY_SOURCE_TABLE1 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+Splitting COPY_SOURCE_TABLE3 partition at SCN=2839417 with old partition=PART_2839107 and new partition=PART_2839417
+DML to partition_config are complete
+INFO poc_e2e: query the result
+
+
+*** source_query.sql ***
+
+'SOURCE_TABLE   COUNT(*)
+------------- ----------
+SOURCE_TABLE1         20
+SOURCE_TABLE2         18
+SOURCE_TABLE3         18
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               COPY_SOURCE_TABLE1   PART_0               2838112
+TARGET               COPY_SOURCE_TABLE1   PART_2838112         2838799
+TARGET               COPY_SOURCE_TABLE1   PART_2838799         2839107
+TARGET               COPY_SOURCE_TABLE1   PART_2839107         2839417
+TARGET               COPY_SOURCE_TABLE1   PART_2839417         MAXVALUE
+TARGET               COPY_SOURCE_TABLE2   PART_0               2838112
+TARGET               COPY_SOURCE_TABLE2   PART_2838112         2838799
+TARGET               COPY_SOURCE_TABLE2   PART_2838799         2839107
+TARGET               COPY_SOURCE_TABLE2   PART_2839107         2839417
+TARGET               COPY_SOURCE_TABLE2   PART_2839417         MAXVALUE
+TARGET               COPY_SOURCE_TABLE3   PART_0               2838112
+TARGET               COPY_SOURCE_TABLE3   PART_2838112         2838799
+TARGET               COPY_SOURCE_TABLE3   PART_2838799         2839107
+TARGET               COPY_SOURCE_TABLE3   PART_2839107         2839417
+TARGET               COPY_SOURCE_TABLE3   PART_2839417         MAXVALUE
+TARGET               TARGET_TABLE1        PART_0               2838112
+TARGET               TARGET_TABLE1        PART_2838112         2838799
+TARGET               TARGET_TABLE1        PART_2838799         2839107
+TARGET               TARGET_TABLE1        PART_2839107         2839417
+TARGET               TARGET_TABLE1        PART_2839417         MAXVALUE
+TARGET               TARGET_TABLE2        PART_0               2838112
+TARGET               TARGET_TABLE2        PART_2838112         2838799
+TARGET               TARGET_TABLE2        PART_2838799         2839107
+TARGET               TARGET_TABLE2        PART_2839107         2839417
+TARGET               TARGET_TABLE2        PART_2839417         MAXVALUE
+TARGET               TARGET_TABLE3        PART_0               2838112
+TARGET               TARGET_TABLE3        PART_2838112         2838799
+TARGET               TARGET_TABLE3        PART_2838799         2839107
+TARGET               TARGET_TABLE3        PART_2839107         2839417
+TARGET               TARGET_TABLE3        PART_2839417         MAXVALUE
+
+
+COPY_SOURCE_TABLE1.PART_0=0
+COPY_SOURCE_TABLE1.PART_2838112=0
+COPY_SOURCE_TABLE1.PART_2838799=0
+COPY_SOURCE_TABLE1.PART_2839107=0
+COPY_SOURCE_TABLE1.PART_2839417=0
+COPY_SOURCE_TABLE2.PART_0=0
+COPY_SOURCE_TABLE2.PART_2838112=0
+COPY_SOURCE_TABLE2.PART_2838799=0
+COPY_SOURCE_TABLE2.PART_2839107=0
+COPY_SOURCE_TABLE2.PART_2839417=0
+COPY_SOURCE_TABLE3.PART_0=0
+COPY_SOURCE_TABLE3.PART_2838112=0
+COPY_SOURCE_TABLE3.PART_2838799=0
+COPY_SOURCE_TABLE3.PART_2839107=0
+COPY_SOURCE_TABLE3.PART_2839417=0
+TARGET_TABLE1.PART_0=0
+TARGET_TABLE1.PART_2838112=10
+TARGET_TABLE1.PART_2838799=10
+TARGET_TABLE1.PART_2839107=5
+TARGET_TABLE1.PART_2839417=0
+TARGET_TABLE2.PART_0=0
+TARGET_TABLE2.PART_2838112=10
+TARGET_TABLE2.PART_2838799=10
+TARGET_TABLE2.PART_2839107=7
+TARGET_TABLE2.PART_2839417=0
+TARGET_TABLE3.PART_0=0
+TARGET_TABLE3.PART_2838112=10
+TARGET_TABLE3.PART_2838799=10
+TARGET_TABLE3.PART_2839107=7
+TARGET_TABLE3.PART_2839417=0
+
+Processing:PART_2838112 begin_scn=2838112, end_scn=2838798:
+{"source_table1":{"ID":2431,"NAME":"EYgLYbeDmurrAujdnyXj","VERSION":1},"source_table2":{"ID":431,"SOURCE_TABLE1_ID":2431,"NAME":"VMjgboCzWBKcYoMqOEIK","VERSION":1},"source_table3":{"ID":431,"SOURCE_TABLE1_ID":2431,"NAME":"uKYdtsavQmRmLOYgMjLu","VERSION":1}}
+{"source_table1":{"ID":2432,"NAME":"cofKiEhOzrnhJwMPEJcs","VERSION":1},"source_table2":{"ID":432,"SOURCE_TABLE1_ID":2432,"NAME":"aUmiPjJkXXlrtoVcPGss","VERSION":1},"source_table3":{"ID":432,"SOURCE_TABLE1_ID":2432,"NAME":"kNdajeBQYAZmExdsXovG","VERSION":1}}
+{"source_table1":{"ID":2433,"NAME":"cSFsfIKYDEHoXFTJznzn","VERSION":1},"source_table2":{"ID":433,"SOURCE_TABLE1_ID":2433,"NAME":"jiWcVOjQcQirYxlQWnzm","VERSION":1},"source_table3":{"ID":433,"SOURCE_TABLE1_ID":2433,"NAME":"jJFvGtwDlcgHXSixhpJI","VERSION":1}}
+{"source_table1":{"ID":2434,"NAME":"ZtPbCsEttSvixEipbTfH","VERSION":1},"source_table2":{"ID":434,"SOURCE_TABLE1_ID":2434,"NAME":"rQYAiRpGnuYvgPOmCKoz","VERSION":1},"source_table3":{"ID":434,"SOURCE_TABLE1_ID":2434,"NAME":"MrmihPxzlOFYGhIIKFiq","VERSION":1}}
+{"source_table1":{"ID":2435,"NAME":"ndoZiJVzOXpoKSqYgVzU","VERSION":1},"source_table2":{"ID":435,"SOURCE_TABLE1_ID":2435,"NAME":"fuftchDrUwdqncZuBIiv","VERSION":1},"source_table3":{"ID":435,"SOURCE_TABLE1_ID":2435,"NAME":"mmnwhwxmDIcqzNkQKsRC","VERSION":1}}
+{"source_table1":{"ID":2436,"NAME":"GypCAOiMaYUSInQNqcgg","VERSION":1},"source_table2":{"ID":436,"SOURCE_TABLE1_ID":2436,"NAME":"pghUKNGyVqxHGXxmBVII","VERSION":1},"source_table3":{"ID":436,"SOURCE_TABLE1_ID":2436,"NAME":"URFLvsDqqQxAYyWQMwAV","VERSION":1}}
+{"source_table1":{"ID":2437,"NAME":"FfUhwSFJJZVLulslZkKB","VERSION":1},"source_table2":{"ID":437,"SOURCE_TABLE1_ID":2437,"NAME":"eDztpTYTTyIGBcqRjKVE","VERSION":1},"source_table3":{"ID":437,"SOURCE_TABLE1_ID":2437,"NAME":"RYClCplxjhRqzzOuzsBQ","VERSION":1}}
+{"source_table1":{"ID":2438,"NAME":"QNPKBLdewNqrJMmgtlrY","VERSION":1},"source_table2":{"ID":438,"SOURCE_TABLE1_ID":2438,"NAME":"AqKTyXAAVrhAYlPTkfQy","VERSION":1},"source_table3":{"ID":438,"SOURCE_TABLE1_ID":2438,"NAME":"DcottEXtkGSziLjOlQLX","VERSION":1}}
+{"source_table1":{"ID":2439,"NAME":"CKeUzFKurCfwNfSuuhMj","VERSION":1},"source_table2":{"ID":439,"SOURCE_TABLE1_ID":2439,"NAME":"dTAECRPJCaqnpuTChznl","VERSION":1},"source_table3":{"ID":439,"SOURCE_TABLE1_ID":2439,"NAME":"HDqylludtwxOkLbFcteB","VERSION":1}}
+{"source_table1":{"ID":2440,"NAME":"fBhhxyzueGgBlChOEuhv","VERSION":1},"source_table2":{"ID":440,"SOURCE_TABLE1_ID":2440,"NAME":"OMXmmSsSoxENBVTEBpsQ","VERSION":1},"source_table3":{"ID":440,"SOURCE_TABLE1_ID":2440,"NAME":"rafezfdpGJBqGCnRUazm","VERSION":1}}
+
+Processing:PART_2838799 begin_scn=2838799, end_scn=2839106:
+{"source_table1":{"ID":2441,"NAME":"wDHgbzGnsafwVNaNsAbs","VERSION":1},"source_table2":{"ID":441,"SOURCE_TABLE1_ID":2441,"NAME":"ctIvArfVvTrytAwTZlRs","VERSION":1},"source_table3":{"ID":441,"SOURCE_TABLE1_ID":2441,"NAME":"FIlbWbEzDPKwUIixvmBX","VERSION":1}}
+{"source_table1":{"ID":2442,"NAME":"SxllabPvyrGxJMUzVMuD","VERSION":1},"source_table2":{"ID":442,"SOURCE_TABLE1_ID":2442,"NAME":"HpSQbZvonyqsjCdfkAWV","VERSION":1},"source_table3":{"ID":442,"SOURCE_TABLE1_ID":2442,"NAME":"TKwMbevpUcACcTnuXgaN","VERSION":1}}
+{"source_table1":{"ID":2443,"NAME":"ZFniujdtMrUoWrQiTNFw","VERSION":1},"source_table2":{"ID":443,"SOURCE_TABLE1_ID":2443,"NAME":"CwrPRemGjEtKGKDNuaGo","VERSION":1},"source_table3":{"ID":443,"SOURCE_TABLE1_ID":2443,"NAME":"VQdrURlvhtqZdScrkaoe","VERSION":1}}
+{"source_table1":{"ID":2444,"NAME":"oWDSBYCQRXXpeioWNdKy","VERSION":1},"source_table2":{"ID":444,"SOURCE_TABLE1_ID":2444,"NAME":"XdfNWVBqlssiwKGXpgIm","VERSION":1},"source_table3":{"ID":444,"SOURCE_TABLE1_ID":2444,"NAME":"oIlLbewrvnqIEUrKsFJn","VERSION":1}}
+{"source_table1":{"ID":2445,"NAME":"RvzOhdNTOwJClwKzIbER","VERSION":1},"source_table2":{"ID":445,"SOURCE_TABLE1_ID":2445,"NAME":"JszpMktpPQLGbHBVmyeq","VERSION":1},"source_table3":{"ID":445,"SOURCE_TABLE1_ID":2445,"NAME":"bFtgjAIMwwcBxIddfsEw","VERSION":1}}
+{"source_table1":{"ID":2446,"NAME":"uYZqEKYYuoqkhyytsHCI","VERSION":1},"source_table2":{"ID":446,"SOURCE_TABLE1_ID":2446,"NAME":"gVrNYokGAFSgWEhgQREe","VERSION":1},"source_table3":{"ID":446,"SOURCE_TABLE1_ID":2446,"NAME":"pywduavqPgmMNvJSMJwF","VERSION":1}}
+{"source_table1":{"ID":2447,"NAME":"QqEQtXQxQDXiFzlbwmDo","VERSION":1},"source_table2":{"ID":447,"SOURCE_TABLE1_ID":2447,"NAME":"UWTOBczjNdlhIJviWNaK","VERSION":1},"source_table3":{"ID":447,"SOURCE_TABLE1_ID":2447,"NAME":"dSYVfYnKiNHhgPTSTEzG","VERSION":1}}
+{"source_table1":{"ID":2448,"NAME":"BBeYMSQcNMlaEbJAvHYj","VERSION":1},"source_table2":{"ID":448,"SOURCE_TABLE1_ID":2448,"NAME":"pGQttEzcNvpXPFjqlpxs","VERSION":1},"source_table3":{"ID":448,"SOURCE_TABLE1_ID":2448,"NAME":"lZknoQibWrCIKQAvGeBa","VERSION":1}}
+{"source_table1":{"ID":2449,"NAME":"NGzcSVQqQGtggIXeXyUQ","VERSION":1},"source_table2":{"ID":449,"SOURCE_TABLE1_ID":2449,"NAME":"wClYLpSVkkRzvxVEuBdF","VERSION":1},"source_table3":{"ID":449,"SOURCE_TABLE1_ID":2449,"NAME":"XbHDzZnhOULCgmyZvSxD","VERSION":1}}
+{"source_table1":{"ID":2450,"NAME":"FipMEOkbJAjuZcUwbYFa","VERSION":1},"source_table2":{"ID":450,"SOURCE_TABLE1_ID":2450,"NAME":"KeXRWPYrPSHAjSRbqsfJ","VERSION":1},"source_table3":{"ID":450,"SOURCE_TABLE1_ID":2450,"NAME":"ZWcoxfyIKEzGwVUcxNET","VERSION":1}}
+
+Processing:PART_2839107 begin_scn=2839107, end_scn=2839416:
+{"source_table1":{"ID":2433,"NAME":"cSFsfIKYDEHoXFTJznzn","VERSION":6},"source_table2":{"ID":433,"SOURCE_TABLE1_ID":2433,"NAME":"jiWcVOjQcQirYxlQWnzm","VERSION":1},"source_table3":{"ID":433,"SOURCE_TABLE1_ID":2433,"NAME":"jJFvGtwDlcgHXSixhpJI","VERSION":1}}

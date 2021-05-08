@@ -1,3 +1,5 @@
+set feedback on
+
 CREATE TABLE SOURCE.SOURCE_TABLE1
 (
  ID      NUMBER,
@@ -31,6 +33,9 @@ CREATE TABLE SOURCE.SOURCE_TABLE3
 ) TABLESPACE USERS;
 
 create sequence SOURCE.SOURCE_TABLE3_SEQ start with 1;
+
+-- ###############################################################################################
+-- ###############################################################################################
 
 CREATE TABLE TARGET.TARGET_TABLE1
 ("PK" CHAR(13),
@@ -78,3 +83,41 @@ CREATE TABLE TARGET.PARTITION_CONFIG
 TABLESPACE USERS;
 
 create sequence target.partition_seq start with 1;
+
+
+-- ###############################################################################################
+-- ###############################################################################################
+
+CREATE TABLE TARGET.COPY_SOURCE_TABLE1
+(
+ SCNNO   NUMBER,
+ ID      NUMBER,
+ NAME    VARCHAR2(20),
+ VERSION NUMBER
+)
+PARTITION BY RANGE (SCNNO) 
+  (PARTITION part_0 VALUES LESS THAN (maxvalue) TABLESPACE USERS);
+
+CREATE TABLE TARGET.COPY_SOURCE_TABLE2
+( 
+ SCNNO              NUMBER,
+ ID                 NUMBER,
+ SOURCE_TABLE1_ID   NUMBER,
+ NAME               VARCHAR2(20),
+ VERSION            NUMBER
+)
+PARTITION BY RANGE (SCNNO) 
+  (PARTITION part_0 VALUES LESS THAN (maxvalue) TABLESPACE USERS);
+
+CREATE TABLE TARGET.COPY_SOURCE_TABLE3
+(
+ SCNNO              NUMBER,
+ ID                 NUMBER,
+ SOURCE_TABLE1_ID   NUMBER,
+ NAME               VARCHAR2(20),
+ VERSION            NUMBER
+)
+PARTITION BY RANGE (SCNNO) 
+  (PARTITION part_0 VALUES LESS THAN (maxvalue) TABLESPACE USERS);
+
+

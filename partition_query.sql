@@ -8,8 +8,7 @@ col table_name form a20
 col partition_name form a20
 SELECT table_owner, table_name, partition_name, high_value
 from dba_tab_partitions 
-where table_owner = 'TARGET'
-and table_name like 'TARGET_TABLE%';
+where table_owner = 'TARGET';
 
 exec dbms_output.put_line(CHR(10));
 
@@ -19,7 +18,7 @@ DECLARE
     SELECT table_owner, table_name, partition_name
     from dba_tab_partitions 
     where table_owner = 'TARGET'
-    and table_name like 'TARGET_TABLE%';
+    and table_name like '%';
   l_count number;
   l_name varchar2(200);
   str varchar2(2000);

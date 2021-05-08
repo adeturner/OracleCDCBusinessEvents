@@ -7,53 +7,90 @@ Goldengate for Big Data generates record by record events that can be streamed t
 
 This repo demonstrates an eventually consistent method to use Goldengate to generate a limited volume of whole transactionally consistent business events.
 
-## 1. Setup database environment
+## 1. Algorithm
 
-Follow 1_dockerSetup.md
+### Background
 
-## 2. Setup ogg environment
+We are solving for business objects that can be described by:
 
-Follow 2_oggSetup.md
+1) an identifying parent table 
 
-## 3. Setup PoC environment
+    PARENT TABLE source_table1 s1 (s1.pk)
 
-Follow 3_pocSchemaSetup.md
+2) with any number of child tables linked by foreign keys:
 
-## 4. Test the PoC
+... with immediate relatives
+    CHILD TABLE  source_table2 s2 (s1.pk=s2.fk)
+    CHILD TABLE  source_table3 s3 (s1.pk=s3.fk)
 
-### 4.1 testdata_e2e1
+... and include nested, cascaded:
+    CHILD TABLE  source_table4 s4 (s1.pk=s4.fk)
+    CHILD TABLE  source_table5 s5 (s4.pk=s5.fk)
+    CHILD TABLE  source_table6 s6 (s4.pk=s6.fk)
 
-Simulate insert 10 rows, insert 10 rows, update 10 rows, delete 10 rows
+We use an eventually consistent approach, to minimise the number of records needed to be processed
 
-(WIP) Create a business object from the data, resulting in expected output like the below:
+We use OGG to capture the ROWID, SCN for each change.
+
+We partition the OGG target tables by SCN range, and split on interval, e.g. 5, 10, N mins
+
+This PoC presents the method for tables s1,s2,s3 above
+
+There appears to be a constraint with flashback query that SCN must be hard coded at parse time
+
+which implies row by row processing; the algorithm below offers optimisation to mitigate that.
+
+### Algorithm
 
 ```code
-@testdata_e2e1
+for each partition in partition config
 
-Processing:PART_2591988 begin_scn=2591988, end_scn=2592326:
-{"ID":2201,"NAME":"GruwFJBqjDDfbMbEkKWE","VERSION":1}
-{"ID":2202,"NAME":"VIzZrPIXIXPBSSjfrcqd","VERSION":1}
-{"ID":2203,"NAME":"ibpMSBKpWkBxQuiHMwgi","VERSION":1}
-{"ID":2204,"NAME":"rCvDbkVGJdSqgwxmoAuA","VERSION":1}
-{"ID":2205,"NAME":"BMmaUgwBiTiahSwmvrLZ","VERSION":1}
-{"ID":2206,"NAME":"dhXgcFivntAAdLzjKarA","VERSION":1}
-{"ID":2207,"NAME":"JWnqOvhVtWfURKqrDZzG","VERSION":1}
-{"ID":2208,"NAME":"frXyfRtDKCOYGtPrfwyq","VERSION":1}
-{"ID":2209,"NAME":"TiWCljYEgbINZXcEvfwZ","VERSION":1}
-{"ID":2210,"NAME":"amWBKcgmUTlkmWRIUVnc","VERSION":1}
+    // Through OGG we have tracked the changes at each table level within the business object
+    // these are stored in TARGET.TARGET_TABLEn
 
-Processing:PART_2592327 begin_scn=2592327, end_scn=2592512:
-{"ID":2211,"NAME":"UOaEhUjWcwZbiYsFtFyr","VERSION":1}
-{"ID":2212,"NAME":"ACbxBvPQtfAScUKNWWlK","VERSION":1}
-{"ID":2213,"NAME":"HGyQstsuFvSqopYzcBYG","VERSION":1}
-{"ID":2214,"NAME":"UTTxeoCzkhoHibTqarDR","VERSION":1}
-{"ID":2215,"NAME":"osfzKaQEgfXiJaeJLZEJ","VERSION":1}
-{"ID":2216,"NAME":"OCPeWDBCPwExYjGWYcue","VERSION":1}
-{"ID":2217,"NAME":"fvKGddGaQGDMxVEqdqfs","VERSION":1}
-{"ID":2218,"NAME":"zgHsQqdvDEgqBkgaYeVX","VERSION":1}
-{"ID":2219,"NAME":"KvsRMNTEUPnemPsbaAax","VERSION":1}
-{"ID":2220,"NAME":"RGQyrQwIcRYgOrNgYHGe","VERSION":1}
+    // Our next aim is tp generate a unique list of business object masters, i.e. source_table1 {rid, max(scn)}
 
-Processing:PART_2592513 begin_scn=2592513, end_scn=2592703:
-{"ID":2203,"NAME":"ibpMSBKpWkBxQuiHMwgi","VERSION":6}
+    // get the max scn for each row id (we only need the last one in the time period)
+    for each target_tableN get the set {rid, max(scn) as target_scn}
+
+        // join back up to get the business object master
+        insert into master_source_table
+        select s1.rid, target_scn from source_table1 s1, source_tableN n wherre s1.pk = n.fk
+
+    end
+
+    // in master_source_table we now have the full set of changes at business object layer
+    // we only need to generate the object for the last one
+
+    // loop through the max scn for each business object
+    select rid, max(scn) as max_scn from master_source_table
+    loop 
+        select <business object> 
+        from source_table1 s1 as of max_scn, 
+        source_table1 s2 as of max_scn, 
+        .. 
+        source_table1 sN as of max_scn
+        where s1.rowid = rid
+        and   s1.pk = s2.fk
+        ...
+        and   s1.pk = sN.fk
+        and   s1.row
+    end
+
+end
 ```
+
+## 1. Setup
+
+- Follow 1_dockerSetup.md
+- Follow 2_oggSetup.md
+- Follow 3_pocSchemaSetup.md
+
+### 4.1 End to End test
+
+Execute poc_e2e.sql
+
+- Start OGG
+- Simulate insert 10 rows, insert 10 rows, update 10 rows, delete 10 rows
+- Split partitions
+- (WIP) Create a business object from the data

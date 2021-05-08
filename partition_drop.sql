@@ -8,7 +8,7 @@ DECLARE
     SELECT table_name, partition_name
     from dba_tab_partitions 
     where table_owner = 'TARGET'
-    and table_name like 'TARGET_TABLE%';
+    and (table_name like 'TARGET_TABLE%' or table_name like 'COPY_%');
   l_count number;
   l_name varchar2(2);
 BEGIN
@@ -35,16 +35,22 @@ DECLARE
     SELECT table_name, partition_name
     from dba_tab_partitions 
     where table_owner = 'TARGET'
-    and table_name like 'TARGET_TABLE%';
+    and (table_name like 'TARGET_TABLE%' or table_name like 'COPY_%');
   l_count number;
   l_name varchar2(2);
 BEGIN
   FOR p IN c1
   LOOP
     begin
-        EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' RENAME PARTITION ' || p.partition_name || ' TO PART_0';
         dbms_output.put_line( 'Renaming partition target_table1.' || p.partition_name);
-        exception
+        if p.partition_name = 'PART_0' then
+          EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' ADD PARTITION PART_0A VALUES LESS THAN (maxvalue) TABLESPACE USERS';
+          EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' DROP PARTITION ' || p.partition_name;
+          EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' RENAME PARTITION PART_0A TO PART_0';
+        else
+          EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' RENAME PARTITION ' || p.partition_name || ' TO PART_0';
+        end if;
+    exception
         when others then
         null;
     end;
