@@ -1,0 +1,11 @@
+replicat repl1
+USERID ogg_apply@ORCLPDB1, PASSWORD password1
+HANDLECOLLISIONS
+INSERTUPDATES
+INSERTDELETES
+APPLYNOOPUPDATES
+BATCHSQL
+SOURCECATALOG ORCLPDB1
+map source.source_table1, target target.target_table1, colmap (RID=@TOKEN ('TKN-ROWID'),MODIFY_TIME=@DATENOW(),PK=ID,SCNNO=@TOKEN ('TKN-CSCN'),optype=@TOKEN('TKN-OPTYPE'));
+map source.source_table2, target target.target_table2, colmap (RID=@TOKEN ('TKN-ROWID'),MODIFY_TIME=@DATENOW(),PK=ID,SCNNO=@TOKEN ('TKN-CSCN'),optype=@TOKEN('TKN-OPTYPE'));
+map source.source_table3, target target.target_table3, colmap (RID=@TOKEN ('TKN-ROWID'),MODIFY_TIME=@DATENOW(),PK=ID,SCNNO=@TOKEN ('TKN-CSCN'),optype=@TOKEN('TKN-OPTYPE'));

@@ -112,31 +112,25 @@ end
 
 ## 3. PoC Setup
 
-### Create schema owners
+### a. create schema owners
 
 ```code
 sqlplus system/password1@//localhost:1521/ORCLCDB @schema_create.sql
 ```
 
-### tables
+### b. create tables
 
 ```code
 sqlplus system/password1@//localhost:1521/ORCLCDB @schema_ddl.sql
 ```
 
-### manager parameters
+### c. configure ogg parameters
 
 Copy mgr.prm to /opt/oracle/product/ogg19/dirprm/mgr.prm
-
-### capture parameters
-
 Copy extr1.prm to /opt/oracle/product/ogg19/dirprm/extr1.prm
-
-### apply parameters
-
 Copy repl1.prm to /opt/oracle/product/ogg19/dirprm/repl1.prm
 
-### start ogg
+### d. start ogg
 
 ```code
 ogg/ogg_setup.sh
@@ -148,7 +142,7 @@ ogg/ogg_info.sh
 ogg/ogg_report.sh
 ```
 
-### insert test data and check ogg is working
+### e. insert test data and check ogg is working
 
 ```code
 sqlplus system/password1@//localhost:1521/ORCLPDB1 @testdata_1000rows.sql

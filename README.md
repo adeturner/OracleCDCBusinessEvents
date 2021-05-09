@@ -37,6 +37,8 @@ Both POCs use the same structure:
 
 In each POC directory the key files of note are:
 
+- env.sh is a pre-req for the POC and configures the environment
+
 - schema_ddl.sql
 
 - poc_pkg.sql is the core of the code
