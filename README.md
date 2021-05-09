@@ -31,6 +31,8 @@ We present two POCs
 
 Both POCs use the same structure:
 
+- README
+
 - sql/*.sql are supporting files that work for both POCs
 
 - ogg/*.sh are supporting files that work for both POCs
