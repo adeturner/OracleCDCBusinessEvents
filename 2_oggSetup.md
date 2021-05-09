@@ -90,3 +90,10 @@ container => 'ORCLPDB1');
 end;
 /
 ```
+
+## setup ogg filesystem
+
+```code
+ogg/ogg_init.sh
+```
+

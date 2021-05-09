@@ -1,127 +1,46 @@
 
 # Using Goldengate Change Data Capture to generate infrequent and whole business events
 
+## Introduction
+
 A common pattern is to integrate an on-prem oracle database with a modernised cloud environment to support, for example, a strangler pattern
 
-Goldengate for Big Data generates record by record events that can be streamed to e.g. Kafka.  But For some databases change data capture generates a large amount of change volume and scaling (e.g. through multiple kafka consumers) is likely to mean that we cannot respect transaction boundaries.
+Goldengate for Big Data generates record by record events that can be streamed to e.g. Kafka.  
 
-This repo demonstrates an eventually consistent method to use Goldengate to generate a limited volume of whole transactionally consistent business events.
+But For some databases change data capture generates a large amount of change volume and scaling (e.g. through multiple kafka consumers) 
 
-## 1. Algorithm
+In these scenarios we are unlikely to maintain transactional consistency of business objects.
 
-### Background
+Here we demonstrate an eventually consistent method to generate low volume transactionally consistent business events from a high volume change data capture stream
 
-We are solving for business objects that can be described by:
+There are two POCs
 
-an identifying parent table 
+- POC #1 is the first attempt, and resulted in row by row processing that potentially has high impact on the source system and may not perform acceptably.
 
-    PARENT TABLE source_table1 s1 (s1.pk)
-
-with any number of child tables linked by foreign keys:
-
-... with immediate relatives
-
-    CHILD TABLE  source_table2 s2 (s1.pk=s2.fk)
-    CHILD TABLE  source_table3 s3 (s1.pk=s3.fk)
-
-... and include nested, cascaded:
-
-    CHILD TABLE  source_table4 s4 (s1.pk=s4.fk)
-    CHILD TABLE  source_table5 s5 (s4.pk=s5.fk)
-    CHILD TABLE  source_table6 s6 (s4.pk=s6.fk)
-
-We use an eventually consistent approach, to minimise the number of records needed to be processed
-
-We use OGG to capture the ROWID, SCN for each change.
-
-We partition the OGG target tables by SCN range, and split on interval, e.g. 5, 10, N mins
-
-This PoC presents the method for tables s1,s2,s3 above
-
-NOTE: There appears to be a constraint with flashback query that SCN must be hard coded at parse time which implies row by row processing is required.
-
-POC1 describes the original row by row approach to mitigate the flashback query. During writing it was felt that it was too intrusive on the source database, partly because of the flashback query problem.
-
-Example POC1 output is shown below, with each business object comprising the master/parent table record supported by arrays of detail/child tables
-
-```code
-    {
-        "source_table1": {
-            "ID": 2540,
-            "NAME": "reDfdpuRUiSBUJjnwZDr",
-            "VERSION": 1
-        },
-        "source_table2": [{
-            "ID": 540,
-            "SOURCE_TABLE1_ID": 2540,
-            "NAME": "tbosRMEfJuqTIWqbqMiT",
-            "VERSION": 1
-        }],
-        "source_table3": [{
-            "ID": 540,
-            "SOURCE_TABLE1_ID": 2540,
-            "NAME": "koOtWZEeMyjmpheIqHLn",
-            "VERSION": 1
-        }]
-    }
-```
-
-It is a short step from here to put each record on an AQ, or to an API using UTL_HTTP
-
-### Algorithm
-
-```code
-
-// Through OGG we have tracked the changes at each table level within the business object
-// these are stored in TARGET.TARGET_TABLEn
-
-for each partition in partition config
-
-    // Our next aim is to generate a unique list of object masters, i.e. source_table1 {rid, max(scn)}
-
-    // get the max scn for each row id (we only need the last one in the time period)
-    for each target_tableN get the set {rid, max(scn) as target_scn}
-
-        // join back up to get the business object master
-        
-        insert into master_source_table
-        select s1.rid, target_scn from source_table1 s1, source_tableN n wherre s1.pk = n.fk
-
-    end
-
-    // in master_source_table we now have the full set of changes at business object layer
-    // we only need to generate the object for the last one
-
-    // loop through the max scn for each business object
-    select rid, max(scn) as max_scn from master_source_table
-    loop 
-        
-        select <business object> 
-        from source_table1 s1 as of max_scn, 
-        source_table1 s2 as of max_scn, 
-        .. 
-        source_table1 sN as of max_scn
-        where s1.rowid = rid
-        and   s1.pk = s2.fk
-        ...
-        and   s1.pk = sN.fk
-        and   s1.row
-    end
-
-end
-```
+- POC #2 (in flight) builds on learnings to allow set processing and ensure that all the activity happens on the target system and not the source.
 
 ## Setup
 
-- Follow 1_dockerSetup.md
-- Follow 2_oggSetup.md
-- Follow 3_pocSchemaSetup.md
+1. Follow 1_dockerSetup.md
 
-### End to End test
+2. Follow 2_oggSetup.md
 
-Execute poc_e2e.sql
+3. Follow the README in the appropriate POC directory
 
-- Start OGG
-- Simulate insert 10 rows, insert 10 rows, update 10 rows, delete 10 rows
-- Split partitions
-- (WIP) Create a business object from the data
+## Key files
+
+Both POCs use the same structure:
+
+- sql/*.sql are supporting files that work for both POCs
+
+- ogg/*.sh are supporting files that work for both POCs
+
+In each POC directory the key files of note are:
+
+- schema_ddl.sql
+
+- poc_pkg.sql is the core of the code
+
+- poc_e2e.sql runs the end to end proof of concept
+
+- poc_cleanup.sql runs the end to end proof of concept
