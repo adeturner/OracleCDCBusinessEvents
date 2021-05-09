@@ -1,6 +1,6 @@
 # Oracle Goldengate Container Setup
 
-## install ogg in the container
+## 1. install ogg in the container
 
 Download binaries locally from https://www.oracle.com/uk/middleware/technologies/goldengate-downloads.html
 
@@ -12,7 +12,7 @@ Note there is a permissions bug which needs fixing from inside wsl
 chmod +rx stage/ext/jlib/version4j.jar
 ```
 
-## Create response file for install
+## 2. Create response file for install
 
 Copy and edit fbo_ggs_Linux_x64_shiphome/Disk1/response/oggcore.rsp 
 
@@ -33,11 +33,11 @@ export OGG_HOME=/opt/oracle/product/ogg19
 export PATH=/opt/oracle/product/ogg19/bin:$PATH
 ```
 
-## setup ogg in ORCLCDB
+## 3. setup ogg in ORCLCDB
 
 Follow https://docs.oracle.com/en/middleware/goldengate/core/19.1/oracle-db/configuring-oracle-goldengate-multitenant-container-database-1.html#GUID-26AFC906-E67D-448E-93EC-FE2A54679793
 
-## Enable archivelog
+## 4. Enable archivelog
 
 This turns out to be hard because when you stop the database it stops the container. One way is to edit the startup file
 
@@ -55,7 +55,7 @@ $ diff startDB.sh startDB.sh.archivelogenable
 
 Restart the container, then edit the file again to remove the alter database command
 
-## CDB level
+## 5. Configure CDB level
 
 ```code
 sqlplus sys/password1@//localhost:1521/ORCLCDB as sysdba
@@ -73,7 +73,7 @@ exec dbms_goldengate_auth.grant_admin_privilege('C##GGADMIN',container=>'all')
 grant dba to c##ggadmin
 ```
 
-## PDB level
+## 6. Configure PDB level
 
 ```code
 sqlplus sys/password1@//localhost:1521/ORCLCDB as sysdba
@@ -91,7 +91,7 @@ end;
 /
 ```
 
-## setup ogg filesystem
+## 7. initialise ogg filesystem
 
 ```code
 ogg/ogg_init.sh

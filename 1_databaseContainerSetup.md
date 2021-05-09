@@ -1,10 +1,10 @@
 # Oracle Database Container Setup
 
-## install docker client
+## 1. install docker client
 
 Follow https://docs.docker.com/docker-for-windows/wsl/
 
-## set memory limit on wsl2
+## 2. set memory limit on wsl2
 
 notepad C:\Users\<user>\.wslconfig
 
@@ -16,7 +16,7 @@ wsl --shutdown
 
 restart docker desktop
 
-## just for information about oracle enterprise db on docker
+## 3. just for information about oracle enterprise db on docker
 
 https://container-registry.oracle.com/pls/apex/f?p=113:4:109318438803394:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:9,9,Oracle%20Database%20Enterprise%20Edition,Oracle%20Database%20Enterprise%20Edition,1,0&cs=3xcKsg6fc98cu4qVZo7G7DZC0px6Pk4OqwZbujP-WFaaQTKU-dokjEMwLN2Q4B0NraK6htQsJXdJLM5JFn0p1_A
 
@@ -56,7 +56,7 @@ Parameters:
                          For further details see the "Running scripts after setup and on startup" section below.
 ```
 
-## get database docker container
+## 4. get database docker container
 
 You might get "Error response from daemon: pull access denied for container-registry.oracle.com/enterprise, repository does not exist or may require 'docker login': denied: requested access to the resource is denied"
 
@@ -74,7 +74,7 @@ docker run -d --name ORADB -p 1521:1521 -p 5500:5500 -e ORACLE_PWD=password1 -v 
 # docker exec -it ORADB /bin/bash
 ```
 
-## get instant client
+## 5. get instant client
 
 ```code
 wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-sqlplus-linux.x64-21.1.0.0.0.zip
