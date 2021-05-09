@@ -48,3 +48,5 @@ In each POC directory the key files of note are:
 - poc_e2e.sql runs the end to end proof of concept
 
 - poc_cleanup.sql tidies up
+
+- a .lst file - the output of the last execution of the POC
