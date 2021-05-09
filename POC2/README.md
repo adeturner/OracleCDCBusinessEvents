@@ -20,13 +20,13 @@ with any number of child tables linked by foreign keys:
 
 ... with immediate relatives
 
-    CHILD TABLE  CUSTOMER_ORDER
-    CHILD TABLE  ADDRESS 
+    CHILD TABLE CUSTOMER_ORDER (child of customer)
+    CHILD TABLE ADDRESS (child of customer)
 
 ... and include nested, cascaded:
 
-    CHILD TABLE  ORDER_DETAIL (child of order)
-    CHILD TABLE  DELIVERY (child of address, order)
+    CHILD TABLE ORDER_DETAIL (child of order)
+    CHILD TABLE DELIVERY (child of address, order)
 
 We use an eventually consistent approach, to minimise the number of records needed to be processed
 
