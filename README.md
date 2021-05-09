@@ -15,9 +15,18 @@ In these scenarios we are unlikely to maintain transactional consistency of busi
 
 We present two POCs
 
-- POC #1 (deprecated) is the first attempt, which resulted in row by row processing that potentially has high impact on the source system and may not scale well.
+- POC #1 (obsolete) complete, but mothballed as I wasn't happy with it (fail fast)
 
-- POC #2 (functional; testing incomplete) builds on the learnings from POC1, and demonstrates to a data driven approach to a complex schema
+- POC #2 is functionally complete, but requires additional functional testing, further development to productionise.  
+
+The POC2 high level summary: 
+
+- Uses an example complex multi-level schema
+- Metadata driven (extent can easily be improved)
+- Changes are reported against the CUSTOMER master table, even if the update occured on a detail table up to two levels below (CUSTOMER_ORDERS, ORDER_DETAIL, ADDRESS or DELIVER) (can increase complexity easily)
+- Multiple updates against the same CUSTOMER during a period are aggregated, and the CUSTOMER object is only transmitted once.
+- The POC readme shows the JSON that is produced to stdout: https://github.com/adeturner/OracleCDCBusinessEvents/tree/main/POC2
+- The JSON can be sent to an AQ queue, API etc directly from PLSQL (not shown)
 
 ## Setup
 
