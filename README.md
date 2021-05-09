@@ -7,13 +7,13 @@ A common pattern is to integrate an on-prem oracle database with a modernised cl
 
 Goldengate for Big Data generates record by record events that can be streamed to e.g. Kafka.  
 
-But For some databases change data capture generates a large amount of change volume and scaling (e.g. through multiple kafka consumers) 
+But For some databases change data capture generates a large amount of change volume and requires scaling e.g. through multiple kafka consumers.
 
-In these scenarios we are unlikely to maintain transactional consistency of business objects.
+In these scenarios we are unlikely to maintain transactional consistency of business objects, as individual CDC records may not be processed in order.
 
-Here we demonstrate an eventually consistent method to generate low volume transactionally consistent business events from a high volume change data capture stream
+**In this repo we demonstrate an eventually consistent method to generate a proportionately low volume of transactionally consistent business events from a high volume change data capture stream**
 
-There are two POCs
+We present two POCs
 
 - POC #1 is the first attempt, and resulted in row by row processing that potentially has high impact on the source system and may not perform acceptably.
 
