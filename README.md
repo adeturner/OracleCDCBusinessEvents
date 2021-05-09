@@ -15,9 +15,9 @@ In these scenarios we are unlikely to maintain transactional consistency of busi
 
 We present two POCs
 
-- POC #1 is the first attempt, which resulted in row by row processing that potentially has high impact on the source system and may not scale well.
+- POC #1 (deprecated) is the first attempt, which resulted in row by row processing that potentially has high impact on the source system and may not scale well.
 
-- POC #2 (in flight) builds on learnings to allow scaleable set processing whilst ensuring that all the activity happens on the target system and not the source.
+- POC #2 (functional; testing incomplete) builds on the learnings from POC1, and demonstrates to a data driven approach to a complex schema
 
 ## Setup
 
