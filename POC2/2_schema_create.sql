@@ -12,3 +12,7 @@ GRANT CONNECT, RESOURCE, DBA TO target;
 GRANT SELECT ANY DICTIONARY to target;
 ALTER USER target DEFAULT TABLESPACE users;
 
+CREATE PUBLIC DATABASE LINK source_link CONNECT TO source IDENTIFIED BY source USING 'ORCLPDB1';
+
+select 'source ok' from dual@source_link
+/

@@ -1,0 +1,1109 @@
+
+
+*** poc_e2e.sql ***
+
+
+INFO test_reset: update poc_pkg...
+No errors.
+No errors.
+
+INFO test_reset: wait for OGG to start...
+INFO test_reset: reset source data
+
+
+*** source_deleteall.sql ***
+DELETE FROM SOURCE.CUSTOMER
+DECLARE
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (SOURCE.ORDER_FK) violated - child record found
+ORA-06512: at line 15
+ORA-06512: at line 15
+
+
+INFO test_reset: wait for OGG to catchup...
+INFO test_reset: split to get empty lead partition
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3260856
+Max partition_config SCN=3258082
+Splitting CUSTOMER_ORDER partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+Splitting MASTER_CUSTOMER partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+Splitting ADDRESS partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+Splitting ORDER_DETAIL partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+Splitting CUSTOMER partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+Splitting DELIVERY partition at SCN=3260856 with old partition=PART_3258082 and new partition=PART_3260856
+DML to partition_config are complete
+INFO test_reset: partition reset...
+
+
+*** partition_reset.sql ***
+
+
+*** partition_drop.sql ***
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3260856
+Dropping partition target_table1.PART_3258082
+Dropping partition target_table1.PART_3258082
+Dropping partition target_table1.PART_3258082
+Dropping partition target_table1.PART_3260856
+Dropping partition target_table1.PART_3258082
+Dropping partition target_table1.PART_3258082
+Dropping partition target_table1.PART_3260856
+Dropping partition target_table1.PART_3260856
+Dropping partition target_table1.PART_3260856
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_3256881
+Dropping partition target_table1.PART_3257453
+Dropping partition target_table1.PART_3257806
+Dropping partition target_table1.PART_3258082
+Renaming partition ADDRESS.PART_0
+Renaming partition CUSTOMER.PART_0
+Renaming partition CUSTOMER_ORDER.PART_0
+Renaming partition DELIVERY.PART_0
+Renaming partition MASTER_CUSTOMER.PART_3260856
+Renaming partition ORDER_DETAIL.PART_0
+
+
+*** partition_config.sql ***
+
+
+
+MODULE_NAME          PARTITION_NAME        BEGIN_SCN    END_SCN
+-------------------- -------------------- ---------- ----------
+POC                  PART_0                        0
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               ADDRESS              PART_0               MAXVALUE
+TARGET               CUSTOMER             PART_0               MAXVALUE
+TARGET               CUSTOMER_ORDER       PART_0               MAXVALUE
+TARGET               DELIVERY             PART_0               MAXVALUE
+TARGET               MASTER_CUSTOMER      PART_0               MAXVALUE
+TARGET               ORDER_DETAIL         PART_0               MAXVALUE
+
+
+ADDRESS.PART_0=0
+CUSTOMER.PART_0=0
+CUSTOMER_ORDER.PART_0=0
+DELIVERY.PART_0=0
+MASTER_CUSTOMER.PART_0=0
+ORDER_DETAIL.PART_0=0
+INFO test_reset: split partition now to avoid writing to PART_0
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3262107
+Max partition_config SCN=0
+Splitting CUSTOMER_ORDER partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+Splitting MASTER_CUSTOMER partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+Splitting ADDRESS partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+Splitting ORDER_DETAIL partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+Splitting CUSTOMER partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+Splitting DELIVERY partition at SCN=3262107 with old partition=PART_0 and new partition=PART_3262107
+DML to partition_config are complete
+
+INFO test_reset: wait for OGG to start...
+INFO test_data: insert single customer with details
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3262555
+Max partition_config SCN=3262107
+Splitting CUSTOMER_ORDER partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+Splitting MASTER_CUSTOMER partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+Splitting ADDRESS partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+Splitting ORDER_DETAIL partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+Splitting CUSTOMER partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+Splitting DELIVERY partition at SCN=3262555 with old partition=PART_3262107 and new partition=PART_3262555
+DML to partition_config are complete
+INFO test_data: insert single customer with details
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3262836
+Max partition_config SCN=3262555
+Splitting CUSTOMER_ORDER partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+Splitting MASTER_CUSTOMER partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+Splitting ADDRESS partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+Splitting ORDER_DETAIL partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+Splitting CUSTOMER partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+Splitting DELIVERY partition at SCN=3262836 with old partition=PART_3262555 and new partition=PART_3262836
+DML to partition_config are complete
+INFO test_data: insert single customer with details
+INFO test_data: update first customer
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3263111
+Max partition_config SCN=3262836
+Splitting CUSTOMER_ORDER partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+Splitting MASTER_CUSTOMER partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+Splitting ADDRESS partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+Splitting ORDER_DETAIL partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+Splitting CUSTOMER partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+Splitting DELIVERY partition at SCN=3263111 with old partition=PART_3262836 and new partition=PART_3263111
+DML to partition_config are complete
+INFO poc_e2e: query the result
+
+
+*** source_query.sql ***
+
+
+CUSTOMER=9
+CUSTOMER_ORDER=36
+ORDER_DETAIL=180
+ADDRESS=18
+DELIVERY=36
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               CUSTOMER             PART_3262107         3262555
+TARGET               ADDRESS              PART_3262107         3262555
+TARGET               CUSTOMER_ORDER       PART_3262107         3262555
+TARGET               ORDER_DETAIL         PART_3262107         3262555
+TARGET               DELIVERY             PART_3262107         3262555
+TARGET               CUSTOMER_ORDER       PART_3262555         3262836
+TARGET               ADDRESS              PART_3262555         3262836
+TARGET               ORDER_DETAIL         PART_3262555         3262836
+TARGET               CUSTOMER             PART_3262555         3262836
+TARGET               DELIVERY             PART_3262555         3262836
+TARGET               CUSTOMER_ORDER       PART_3262836         3263111
+TARGET               ADDRESS              PART_3262836         3263111
+TARGET               ORDER_DETAIL         PART_3262836         3263111
+TARGET               CUSTOMER             PART_3262836         3263111
+TARGET               DELIVERY             PART_3262836         3263111
+TARGET               CUSTOMER_ORDER       PART_3263111         MAXVALUE
+TARGET               ADDRESS              PART_3263111         MAXVALUE
+TARGET               ORDER_DETAIL         PART_3263111         MAXVALUE
+TARGET               CUSTOMER             PART_3263111         MAXVALUE
+TARGET               DELIVERY             PART_3263111         MAXVALUE
+TARGET               ADDRESS              PART_0               3262107
+TARGET               CUSTOMER             PART_0               3262107
+TARGET               CUSTOMER_ORDER       PART_0               3262107
+TARGET               DELIVERY             PART_0               3262107
+TARGET               MASTER_CUSTOMER      PART_0               3262107
+TARGET               MASTER_CUSTOMER      PART_3262107         3262555
+TARGET               MASTER_CUSTOMER      PART_3262555         3262836
+TARGET               MASTER_CUSTOMER      PART_3262836         3263111
+TARGET               MASTER_CUSTOMER      PART_3263111         MAXVALUE
+TARGET               ORDER_DETAIL         PART_0               3262107
+
+
+CUSTOMER.PART_3262107=1
+ADDRESS.PART_3262107=2
+CUSTOMER_ORDER.PART_3262107=4
+ORDER_DETAIL.PART_3262107=20
+DELIVERY.PART_3262107=4
+CUSTOMER_ORDER.PART_3262555=4
+ADDRESS.PART_3262555=2
+ORDER_DETAIL.PART_3262555=20
+CUSTOMER.PART_3262555=1
+DELIVERY.PART_3262555=4
+CUSTOMER_ORDER.PART_3262836=4
+ADDRESS.PART_3262836=2
+ORDER_DETAIL.PART_3262836=20
+CUSTOMER.PART_3262836=1
+DELIVERY.PART_3262836=4
+CUSTOMER_ORDER.PART_3263111=0
+ADDRESS.PART_3263111=0
+ORDER_DETAIL.PART_3263111=0
+CUSTOMER.PART_3263111=0
+DELIVERY.PART_3263111=0
+ADDRESS.PART_0=0
+CUSTOMER.PART_0=0
+CUSTOMER_ORDER.PART_0=0
+DELIVERY.PART_0=0
+MASTER_CUSTOMER.PART_0=0
+MASTER_CUSTOMER.PART_3262107=0
+MASTER_CUSTOMER.PART_3262555=0
+MASTER_CUSTOMER.PART_3262836=0
+MASTER_CUSTOMER.PART_3263111=0
+ORDER_DETAIL.PART_0=0
+
+
+*** gen_masterdata.sql ***
+
+
+
+Processing:PART_3262107 begin_scn=3262107, end_scn=3262554:
+
+Master: CUSTOMER Level=0 L1= L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'I', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master
+				where master.rowid = 'AAASMSAAMAAAACWAAD'
+
+Master: CUSTOMER Level=1 L1=CUSTOMER_ORDER L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAM'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAO'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAP'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAN'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=1 L1=ADDRESS L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMbAAMAAAACmAAH'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 child
+				where child.rowid = 'AAASMbAAMAAAACmAAG'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=2 L1=CUSTOMER_ORDER L2=ORDER_DETAIL
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABB'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABI'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABH'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABJ'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAA+'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABA'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABC'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABG'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABM'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAA9'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAA/'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABD'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABK'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABP'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABE'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABL'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABN'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABO'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAA8'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262489 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABF'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+
+Master: CUSTOMER Level=2 L1=ADDRESS L2=DELIVERY
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 childL1,
+					 source.DELIVERY@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAO'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 childL1,
+					 source.DELIVERY@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAN'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 childL1,
+					 source.DELIVERY@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAM'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262489
+				from source.CUSTOMER@source_link as of scn 3262489 master,
+					 source.ADDRESS@source_link as of scn 3262489 childL1,
+					 source.DELIVERY@source_link as of scn 3262489 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAP'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+
+Processing:PART_3262555 begin_scn=3262555, end_scn=3262835:
+
+Master: CUSTOMER Level=0 L1= L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'I', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master
+				where master.rowid = 'AAASMSAAMAAAACWAAE'
+
+Master: CUSTOMER Level=1 L1=CUSTOMER_ORDER L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAQ'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAT'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAS'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAR'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=1 L1=ADDRESS L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMbAAMAAAACmAAI'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 child
+				where child.rowid = 'AAASMbAAMAAAACmAAJ'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=2 L1=CUSTOMER_ORDER L2=ORDER_DETAIL
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABW'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABf'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABd'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABU'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABg'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABj'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABY'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABh'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABa'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABS'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABV'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABe'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABi'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABZ'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABc'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABQ'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABR'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABT'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABX'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262688 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABb'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+
+Master: CUSTOMER Level=2 L1=ADDRESS L2=DELIVERY
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 childL1,
+					 source.DELIVERY@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAQ'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 childL1,
+					 source.DELIVERY@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAS'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 childL1,
+					 source.DELIVERY@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAT'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262688
+				from source.CUSTOMER@source_link as of scn 3262688 master,
+					 source.ADDRESS@source_link as of scn 3262688 childL1,
+					 source.DELIVERY@source_link as of scn 3262688 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAR'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+
+Processing:PART_3262836 begin_scn=3262836, end_scn=3263110:
+
+Master: CUSTOMER Level=0 L1= L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'I', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master
+				where master.rowid = 'AAASMSAAMAAAACWAAF'
+
+Master: CUSTOMER Level=1 L1=CUSTOMER_ORDER L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAV'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAX'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAU'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMVAAMAAAAC2AAW'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=1 L1=ADDRESS L2=
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMbAAMAAAACmAAL'
+				and   master.ID = child.CUSTOMER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 child
+				where child.rowid = 'AAASMbAAMAAAACmAAK'
+				and   master.ID = child.CUSTOMER_ID
+
+Master: CUSTOMER Level=2 L1=CUSTOMER_ORDER L2=ORDER_DETAIL
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABx'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABu'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABn'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABw'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABz'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAB2'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABm'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABo'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAB0'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAB3'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABl'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABp'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABy'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABk'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABt'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABv'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABq'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABs'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGABr'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.CUSTOMER_ORDER@source_link as of scn 3262972 childL1,
+					 source.ORDER_DETAIL@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMYAAMAAAADGAB1'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ORDER_ID
+
+Master: CUSTOMER Level=2 L1=ADDRESS L2=DELIVERY
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 childL1,
+					 source.DELIVERY@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAV'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 childL1,
+					 source.DELIVERY@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAX'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 childL1,
+					 source.DELIVERY@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAU'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+insert into target.MASTER_CUSTOMER (optype, rid, scnno)
+select 'C', master.rowid, 3262972
+				from source.CUSTOMER@source_link as of scn 3262972 master,
+					 source.ADDRESS@source_link as of scn 3262972 childL1,
+					 source.DELIVERY@source_link as of scn 3262972 childL2
+				where childL2.rowid = 'AAASMeAAMAAAADWAAW'
+				and   master.ID = childL1.CUSTOMER_ID
+				and   master.ID = childL2.ADDRESS_ID
+INFO poc_e2e: query the result
+
+
+*** source_query.sql ***
+
+
+CUSTOMER=9
+CUSTOMER_ORDER=36
+ORDER_DETAIL=180
+ADDRESS=18
+DELIVERY=36
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               CUSTOMER             PART_3262107         3262555
+TARGET               ADDRESS              PART_3262107         3262555
+TARGET               CUSTOMER_ORDER       PART_3262107         3262555
+TARGET               ORDER_DETAIL         PART_3262107         3262555
+TARGET               DELIVERY             PART_3262107         3262555
+TARGET               CUSTOMER_ORDER       PART_3262555         3262836
+TARGET               ADDRESS              PART_3262555         3262836
+TARGET               ORDER_DETAIL         PART_3262555         3262836
+TARGET               CUSTOMER             PART_3262555         3262836
+TARGET               DELIVERY             PART_3262555         3262836
+TARGET               CUSTOMER_ORDER       PART_3262836         3263111
+TARGET               ADDRESS              PART_3262836         3263111
+TARGET               ORDER_DETAIL         PART_3262836         3263111
+TARGET               CUSTOMER             PART_3262836         3263111
+TARGET               DELIVERY             PART_3262836         3263111
+TARGET               CUSTOMER_ORDER       PART_3263111         MAXVALUE
+TARGET               ADDRESS              PART_3263111         MAXVALUE
+TARGET               ORDER_DETAIL         PART_3263111         MAXVALUE
+TARGET               CUSTOMER             PART_3263111         MAXVALUE
+TARGET               DELIVERY             PART_3263111         MAXVALUE
+TARGET               MASTER_CUSTOMER      PART_3262107         3262555
+TARGET               MASTER_CUSTOMER      PART_3262555         3262836
+TARGET               MASTER_CUSTOMER      PART_3262836         3263111
+TARGET               ADDRESS              PART_0               3262107
+TARGET               CUSTOMER             PART_0               3262107
+TARGET               CUSTOMER_ORDER       PART_0               3262107
+TARGET               DELIVERY             PART_0               3262107
+TARGET               MASTER_CUSTOMER      PART_0               3262107
+TARGET               MASTER_CUSTOMER      PART_3263111         MAXVALUE
+TARGET               ORDER_DETAIL         PART_0               3262107
+
+
+CUSTOMER.PART_3262107=1
+ADDRESS.PART_3262107=2
+CUSTOMER_ORDER.PART_3262107=4
+ORDER_DETAIL.PART_3262107=20
+DELIVERY.PART_3262107=4
+CUSTOMER_ORDER.PART_3262555=4
+ADDRESS.PART_3262555=2
+ORDER_DETAIL.PART_3262555=20
+CUSTOMER.PART_3262555=1
+DELIVERY.PART_3262555=4
+CUSTOMER_ORDER.PART_3262836=4
+ADDRESS.PART_3262836=2
+ORDER_DETAIL.PART_3262836=20
+CUSTOMER.PART_3262836=1
+DELIVERY.PART_3262836=4
+CUSTOMER_ORDER.PART_3263111=0
+ADDRESS.PART_3263111=0
+ORDER_DETAIL.PART_3263111=0
+CUSTOMER.PART_3263111=0
+DELIVERY.PART_3263111=0
+MASTER_CUSTOMER.PART_3262107=7
+MASTER_CUSTOMER.PART_3262555=7
+MASTER_CUSTOMER.PART_3262836=7
+ADDRESS.PART_0=0
+CUSTOMER.PART_0=0
+CUSTOMER_ORDER.PART_0=0
+DELIVERY.PART_0=0
+MASTER_CUSTOMER.PART_0=0
+MASTER_CUSTOMER.PART_3263111=0
+ORDER_DETAIL.PART_0=0
+
+
+*** gen_masterdata_json.sql ***
+
+
+
+Processing: begin_scn=3262107, end_scn=3262554:
+
+Processing: rid=AAASMSAAMAAAACWAAD for max_scnno=3262489
+
+
+{"optype":"C","customer":{"ID":8,"NAME":"ptiiYIwuMUXwOgPfmWyh","VERSION":1},"CUSTOMER_ORDER":[{"ID":29,"CUSTOMER_ID":8,"NAME":"JxvmQWhJzjhtoMVRubBA","VERSION":1},{"ID":30,"CUSTOMER_ID":8,"NAME":"MuENqiyKlSmUDIJmvION","VERSION":1},{"ID":31,"CUSTOMER_ID":8,"NAME":"FpxyaeAksWGlyHfunaKc","VERSION":1},{"ID":32,"CUSTOMER_ID":8,"NAME":"nCLTGPLRDAINviOlEouQ","VERSION":1}],"ADDRESS":[{"ID":15,"CUSTOMER_ID":8,"ADDRESS":"vKIcbBsTcLIBrLSJWXic","VERSION":1},{"ID":16,"CUSTOMER_ID":8,"ADDRESS":"WPlLLzFyehVombAeRVwm","VERSION":1}],"ORDER_DETAIL":[{"ID":141,"ORDER_ID":29,"DETAIL":"TFvEfqFlExIwTuULhqla","VERSION":1},{"ID":142,"ORDER_ID":29,"DETAIL":"kZMQXeSlmTKqddhpnBXU","VERSION":1},{"ID":143,"ORDER_ID":29,"DETAIL":"UpGSdBFVDHreANRrkOpS","VERSION":1},{"ID":144,"ORDER_ID":29,"DETAIL":"KPbhbpmGvrgBfstNaRlb","VERSION":1},{"ID":145,"ORDER_ID":29,"DETAIL":"mKQnhbhNsXIxRyBwetZZ","VERSION":1},{"ID":146,"ORDER_ID":30,"DETAIL":"eAkQdNpJIwQrndmkTUtl","VERSION":1},{"ID":147,"ORDER_ID":30,"DETAIL":"EfvjLcJUPTFVJfkpItWy","VERSION":1},{"ID":148,"ORDER_ID":30,"DETAIL":"eOBZwZEXdDYzoJwpdtks","VERSION":1},{"ID":149,"ORDER_ID":30,"DETAIL":"hueSbAhwXJiyjvLBEzGo","VERSION":1},{"ID":150,"ORDER_ID":30,"DETAIL":"fhUDdBLnYVipnBQGPjVU","VERSION":1},{"ID":151,"ORDER_ID":31,"DETAIL":"QWhweenrasyBgCywumvD","VERSION":1},{"ID":152,"ORDER_ID":31,"DETAIL":"WMjdoBiaCLGisdjjUkqA","VERSION":1},{"ID":153,"ORDER_ID":31,"DETAIL":"XylYZFhtubxJmtFFYPWh","VERSION":1},{"ID":154,"ORDER_ID":31,"DETAIL":"puaSWhlAnpwRlgbvRRWj","VERSION":1},{"ID":155,"ORDER_ID":31,"DETAIL":"cfjpFMoQtFRKfQStgWYM","VERSION":1},{"ID":156,"ORDER_ID":32,"DETAIL":"ocRoLoFmfBITZkgCtWwL","VERSION":1},{"ID":157,"ORDER_ID":32,"DETAIL":"ZNRGKDmAuRLvqAEyrQGl","VERSION":1},{"ID":158,"ORDER_ID":32,"DETAIL":"QTkckoPoELxdCMWzgEpG","VERSION":1},{"ID":159,"ORDER_ID":32,"DETAIL":"FQiWBNRQAmnKqhoJChvO","VERSION":1},{"ID":160,"ORDER_ID":32,"DETAIL":"OjdwdhvXEtEwhoHSgCtl","VERSION":1}],"DELIVERY":[{"ID":29,"ORDER_ID":29,"ADDRESS_ID":15,"NAME":"tlWiAlsbfCSWYGFrrJuT","
+VERSION":1},{"ID":30,"ORDER_ID":30,"ADDRESS_ID":15,"NAME":"jnVMyjBtJDeJaEwLwqFA","VERSION":1},{"ID":31,"ORDER_ID":31,"ADDRESS_ID":16,"NAME":"veLfIYFELcoBvFWuHOiP","VERSION":1},{"ID":32,"ORDER_ID":32,"ADDRESS_ID":16,"NAME":"bDyusmnEtROvnSCixdtG","VERSION":1}]}
+
+Processing: begin_scn=3262555, end_scn=3262835:
+
+Processing: rid=AAASMSAAMAAAACWAAE for max_scnno=3262688
+
+
+{"optype":"C","customer":{"ID":9,"NAME":"GWNhbvcXjivdktJHVRAW","VERSION":1},"CUSTOMER_ORDER":[{"ID":33,"CUSTOMER_ID":9,"NAME":"UihdLXCJkDFwnLzTdsMu","VERSION":1},{"ID":34,"CUSTOMER_ID":9,"NAME":"OwnoCWiOCMfIfZgeTauq","VERSION":1},{"ID":35,"CUSTOMER_ID":9,"NAME":"tBbryRkTIMbaUsPfzuKQ","VERSION":1},{"ID":36,"CUSTOMER_ID":9,"NAME":"lYUYsQvBGDvSALDUNJxa","VERSION":1}],"ADDRESS":[{"ID":17,"CUSTOMER_ID":9,"ADDRESS":"yJSsMHfeSAZnYGTCybRc","VERSION":1},{"ID":18,"CUSTOMER_ID":9,"ADDRESS":"HHmVzaUkxLhAeahjIxdK","VERSION":1}],"ORDER_DETAIL":[{"ID":161,"ORDER_ID":33,"DETAIL":"wBKHoOgiVbjqziAKgUCw","VERSION":1},{"ID":162,"ORDER_ID":33,"DETAIL":"KkbGMYGCygwudckJwOMg","VERSION":1},{"ID":163,"ORDER_ID":33,"DETAIL":"ymAjmFGTgBPocoAIaRKn","VERSION":1},{"ID":164,"ORDER_ID":33,"DETAIL":"uddzDUzwwMqfHCgwqias","VERSION":1},{"ID":165,"ORDER_ID":33,"DETAIL":"aWqbUxDDuuxrrpfCGzfj","VERSION":1},{"ID":166,"ORDER_ID":34,"DETAIL":"XEEjuMGRWiBVwTXVUiBG","VERSION":1},{"ID":167,"ORDER_ID":34,"DETAIL":"IQbBAifHaKGylHhIJuGY","VERSION":1},{"ID":168,"ORDER_ID":34,"DETAIL":"FjjzfDezHilbrWsXmjqV","VERSION":1},{"ID":169,"ORDER_ID":34,"DETAIL":"WMQHpjdGOduZRkGnTGBH","VERSION":1},{"ID":170,"ORDER_ID":34,"DETAIL":"QQiShyWYqYdgHWgvSMFt","VERSION":1},{"ID":171,"ORDER_ID":35,"DETAIL":"DwLHVMnJXQOFoHXGYXpI","VERSION":1},{"ID":172,"ORDER_ID":35,"DETAIL":"nwLRDxgeUrALupSOOOAW","VERSION":1},{"ID":173,"ORDER_ID":35,"DETAIL":"iyYwTzgtPEomqViGtrmq","VERSION":1},{"ID":174,"ORDER_ID":35,"DETAIL":"DnURGgTCVXcHVNEGvrLS","VERSION":1},{"ID":175,"ORDER_ID":35,"DETAIL":"BUQLMjSogEESCVoofsyp","VERSION":1},{"ID":176,"ORDER_ID":36,"DETAIL":"dsjsHGiaIubQQTNPZvmY","VERSION":1},{"ID":177,"ORDER_ID":36,"DETAIL":"woEOFdPZNzqAfpfseDyB","VERSION":1},{"ID":178,"ORDER_ID":36,"DETAIL":"KWRWXJhZHqsJyBoiVySV","VERSION":1},{"ID":179,"ORDER_ID":36,"DETAIL":"FZaojGJvWMQjSDvTylnM","VERSION":1},{"ID":180,"ORDER_ID":36,"DETAIL":"THjLAeiBoxOkdZpudaSu","VERSION":1}],"DELIVERY":[{"ID":33,"ORDER_ID":33,"ADDRESS_ID":17,"NAME":"SxznEwkTWaBAoAPPagCy","
+VERSION":1},{"ID":34,"ORDER_ID":34,"ADDRESS_ID":17,"NAME":"gYZZTrOLdufDAZnELmfg","VERSION":1},{"ID":35,"ORDER_ID":35,"ADDRESS_ID":18,"NAME":"WIAlSsslNtZvMDBQXnGm","VERSION":1},{"ID":36,"ORDER_ID":36,"ADDRESS_ID":18,"NAME":"WyJZtndwncuoGBhFEJpY","VERSION":1}]}
+
+Processing: begin_scn=3262836, end_scn=3263110:
+
+Processing: rid=AAASMSAAMAAAACWAAF for max_scnno=3262972
+
+
+{"optype":"C","customer":{"ID":10,"NAME":"EXfzlGdveNNUjxlMvMIn","VERSION":1},"CUSTOMER_ORDER":[{"ID":37,"CUSTOMER_ID":10,"NAME":"ArRWZfBCOptLmfTDSVhU","VERSION":1},{"ID":38,"CUSTOMER_ID":10,"NAME":"hzmSKXiCCDkKUFhOyaPN","VERSION":1},{"ID":39,"CUSTOMER_ID":10,"NAME":"wAvPdszmDflurJUcPLTN","VERSION":1},{"ID":40,"CUSTOMER_ID":10,"NAME":"VuRWLzIoNrIlLYGjtcdF","VERSION":1}],"ADDRESS":[{"ID":19,"CUSTOMER_ID":10,"ADDRESS":"GdpvzvphifShyxtIEnUY","VERSION":1},{"ID":20,"CUSTOMER_ID":10,"ADDRESS":"TmCqyTojReqGsfWsdYwy","VERSION":1}],"ORDER_DETAIL":[{"ID":181,"ORDER_ID":37,"DETAIL":"mwccLHcolFlwEZKgIrxN","VERSION":1},{"ID":182,"ORDER_ID":37,"DETAIL":"ljtVLlkRTbcrjxBMztKK","VERSION":1},{"ID":183,"ORDER_ID":37,"DETAIL":"lmySPDsvWQQEEapxhNte","VERSION":1},{"ID":184,"ORDER_ID":37,"DETAIL":"jFfUDmIETUrtdvgAmlQh","VERSION":1},{"ID":185,"ORDER_ID":37,"DETAIL":"CBVYBSoRLuqiypfoYGWj","VERSION":1},{"ID":186,"ORDER_ID":38,"DETAIL":"YTBaJtUWJRCGGJCiGXCO","VERSION":1},{"ID":187,"ORDER_ID":38,"DETAIL":"ApCgKMyNoSzvmnoqsGpU","VERSION":1},{"ID":188,"ORDER_ID":38,"DETAIL":"okIINmtbckdyPSuifzoy","VERSION":1},{"ID":189,"ORDER_ID":38,"DETAIL":"LTRwEqwyQrCvHLXNcwIm","VERSION":1},{"ID":190,"ORDER_ID":38,"DETAIL":"xcMEkteSncpDaHQtbFHd","VERSION":1},{"ID":191,"ORDER_ID":39,"DETAIL":"gCyHisVFYztJwKGweBdB","VERSION":1},{"ID":192,"ORDER_ID":39,"DETAIL":"yZdIoLiIqpGJauFfsRUB","VERSION":1},{"ID":193,"ORDER_ID":39,"DETAIL":"rtwzqsrWLyeOkxWUOhQZ","VERSION":1},{"ID":194,"ORDER_ID":39,"DETAIL":"ibOztzppcbyWvaBpRVfA","VERSION":1},{"ID":195,"ORDER_ID":39,"DETAIL":"KNXbmceobVEbtjBltmpT","VERSION":1},{"ID":196,"ORDER_ID":40,"DETAIL":"dzNVJFxxcpHOgGpeqBum","VERSION":1},{"ID":197,"ORDER_ID":40,"DETAIL":"XNneabInQebhsBrfzOTn","VERSION":1},{"ID":198,"ORDER_ID":40,"DETAIL":"pPCtxyPCaBWQpRkEaVJZ","VERSION":1},{"ID":199,"ORDER_ID":40,"DETAIL":"jYeUqyugVJSfRxfULDgB","VERSION":1},{"ID":200,"ORDER_ID":40,"DETAIL":"deDFvLlSXAFjmyIgOxZS","VERSION":1}],"DELIVERY":[{"ID":37,"ORDER_ID":37,"ADDRESS_ID":19,"NAME":"YjoAMwErLFejPOCl
+XTlO","VERSION":1},{"ID":38,"ORDER_ID":38,"ADDRESS_ID":19,"NAME":"ewWjvBLrODVccADvMwPr","VERSION":1},{"ID":39,"ORDER_ID":39,"ADDRESS_ID":20,"NAME":"TqtGZfECSBUYunAVDtoV","VERSION":1},{"ID":40,"ORDER_ID":40,"ADDRESS_ID":20,"NAME":"HihszClBUQFDANffjQnO","VERSION":1}]}

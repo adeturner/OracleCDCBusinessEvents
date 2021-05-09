@@ -1,3 +1,5 @@
+
+
 # POC1
 
 This README covers the following sections:
@@ -126,9 +128,7 @@ sqlplus system/password1@//localhost:1521/ORCLCDB @schema_ddl.sql
 
 ### c. configure ogg parameters
 
-Copy mgr.prm to /opt/oracle/product/ogg19/dirprm/mgr.prm
-Copy extr1.prm to /opt/oracle/product/ogg19/dirprm/extr1.prm
-Copy repl1.prm to /opt/oracle/product/ogg19/dirprm/repl1.prm
+..\ogg\ogg_copy_params.sh
 
 ### d. start ogg
 

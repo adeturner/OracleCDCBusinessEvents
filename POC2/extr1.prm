@@ -4,6 +4,25 @@ EXTTRAIL /opt/oracle/product/ogg19/dirdat/ex
 UPDATERECORDFORMAT FULL
 REPORTCOUNT EVERY 5 MINUTES, RATE
 SOURCECATALOG ORCLPDB1
-table source.source_table1,tokens (TKN-ROWID = @GETENV ('RECORD','ROWID'),TKN-CSCN = @GETENV('TRANSACTION','CSN'),TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
-table source.source_table2,tokens (TKN-ROWID = @GETENV ('RECORD','ROWID'),TKN-CSCN = @GETENV('TRANSACTION','CSN'),TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
-table source.source_table3,tokens (TKN-ROWID = @GETENV ('RECORD','ROWID'),TKN-CSCN = @GETENV('TRANSACTION','CSN'),TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+
+table source.customer,tokens (
+            TKN-ROWID = @GETENV ('RECORD','ROWID'),
+            TKN-CSCN = @GETENV('TRANSACTION','CSN'),
+            TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+table source.customer_order,tokens (
+            TKN-ROWID = @GETENV ('RECORD','ROWID'),
+            TKN-CSCN = @GETENV('TRANSACTION','CSN'),
+            TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+table source.order_detail,tokens (
+            TKN-ROWID = @GETENV ('RECORD','ROWID'),
+            TKN-CSCN = @GETENV('TRANSACTION','CSN'),
+            TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+table source.address,tokens (
+            TKN-ROWID = @GETENV ('RECORD','ROWID'),
+            TKN-CSCN = @GETENV('TRANSACTION','CSN'),
+            TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+table source.delivery,tokens (
+            TKN-ROWID = @GETENV ('RECORD','ROWID'),
+            TKN-CSCN = @GETENV('TRANSACTION','CSN'),
+            TKN-OPTYPE=@GETENV ('GGHEADER','OPTYPE'));
+
