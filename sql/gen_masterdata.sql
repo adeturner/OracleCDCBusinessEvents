@@ -1,4 +1,3 @@
-
 set serveroutput on lines 2000 pages 1000 trimspool on feedback off
 
 exec dbms_output.put_line(CHR(10));
@@ -22,7 +21,6 @@ begin
     END LOOP;
 end;
 /
-
 
 exec dbms_output.put_line( 'INFO poc_e2e: query the result' );
 @source_query

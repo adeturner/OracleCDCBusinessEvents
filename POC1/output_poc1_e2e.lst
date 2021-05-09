@@ -1,0 +1,366 @@
+
+
+*** testdata_e2e_test1.sql ***
+
+
+INFO test_reset: update poc_pkg...
+No errors.
+No errors.
+
+INFO test_reset: wait for OGG to start...
+INFO test_reset: reset source data
+
+
+*** source_deleteall.sql ***
+DELETE FROM SOURCE.SOURCE_TABLE2
+Delete from SOURCE.SOURCE_TABLE2 completed
+DELETE FROM SOURCE.SOURCE_TABLE3
+Delete from SOURCE.SOURCE_TABLE3 completed
+DELETE FROM SOURCE.SOURCE_TABLE1
+Delete from SOURCE.SOURCE_TABLE1 completed
+INFO test_reset: wait for OGG to catchup...
+INFO test_reset: split to get empty lead partition
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3024242
+Max partition_config SCN=3023785
+Splitting TARGET_TABLE2 partition at SCN=3024242 with old partition=PART_3023785 and new partition=PART_3024242
+Splitting MASTER_SOURCE_TABLE1 partition at SCN=3024242 with old partition=PART_3023785 and new partition=PART_3024242
+Splitting TARGET_TABLE3 partition at SCN=3024242 with old partition=PART_3023785 and new partition=PART_3024242
+Splitting TARGET_TABLE1 partition at SCN=3024242 with old partition=PART_3023785 and new partition=PART_3024242
+DML to partition_config are complete
+INFO test_reset: partition reset...
+
+
+*** partition_reset.sql ***
+
+
+*** partition_drop.sql ***
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_3022823
+Dropping partition target_table1.PART_3023328
+Dropping partition target_table1.PART_3023555
+Dropping partition target_table1.PART_3023785
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_3022823
+Dropping partition target_table1.PART_3023328
+Dropping partition target_table1.PART_3023555
+Dropping partition target_table1.PART_3023785
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_3022823
+Dropping partition target_table1.PART_3023328
+Dropping partition target_table1.PART_3023555
+Dropping partition target_table1.PART_3023785
+Dropping partition target_table1.PART_0
+Dropping partition target_table1.PART_3022823
+Dropping partition target_table1.PART_3023328
+Dropping partition target_table1.PART_3023555
+Dropping partition target_table1.PART_3023785
+Renaming partition MASTER_SOURCE_TABLE1.PART_3024242
+Renaming partition TARGET_TABLE1.PART_3024242
+Renaming partition TARGET_TABLE2.PART_3024242
+Renaming partition TARGET_TABLE3.PART_3024242
+
+
+*** partition_config.sql ***
+
+
+
+MODULE_NAME          PARTITION_NAME        BEGIN_SCN    END_SCN
+-------------------- -------------------- ---------- ----------
+POC                  PART_0                        0
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               MASTER_SOURCE_TABLE1 PART_0               MAXVALUE
+TARGET               TARGET_TABLE1        PART_0               MAXVALUE
+TARGET               TARGET_TABLE2        PART_0               MAXVALUE
+TARGET               TARGET_TABLE3        PART_0               MAXVALUE
+
+
+MASTER_SOURCE_TABLE1.PART_0=0
+TARGET_TABLE1.PART_0=0
+TARGET_TABLE2.PART_0=0
+TARGET_TABLE3.PART_0=0
+INFO test_reset: split partition now to avoid writing to PART_0
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3024835
+Max partition_config SCN=0
+Splitting TARGET_TABLE2 partition at SCN=3024835 with old partition=PART_0 and new partition=PART_3024835
+Splitting MASTER_SOURCE_TABLE1 partition at SCN=3024835 with old partition=PART_0 and new partition=PART_3024835
+Splitting TARGET_TABLE3 partition at SCN=3024835 with old partition=PART_0 and new partition=PART_3024835
+Splitting TARGET_TABLE1 partition at SCN=3024835 with old partition=PART_0 and new partition=PART_3024835
+DML to partition_config are complete
+
+INFO test_reset: wait for OGG to start...
+INFO test_data: insert 10 rows
+testdata_10rows_ins: rows inserted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3025269
+Max partition_config SCN=3024835
+Splitting TARGET_TABLE2 partition at SCN=3025269 with old partition=PART_3024835 and new partition=PART_3025269
+Splitting MASTER_SOURCE_TABLE1 partition at SCN=3025269 with old partition=PART_3024835 and new partition=PART_3025269
+Splitting TARGET_TABLE3 partition at SCN=3025269 with old partition=PART_3024835 and new partition=PART_3025269
+Splitting TARGET_TABLE1 partition at SCN=3025269 with old partition=PART_3024835 and new partition=PART_3025269
+DML to partition_config are complete
+INFO test_data: insert 10 rows
+testdata_10rows_ins: rows inserted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3025495
+Max partition_config SCN=3025269
+Splitting TARGET_TABLE2 partition at SCN=3025495 with old partition=PART_3025269 and new partition=PART_3025495
+Splitting MASTER_SOURCE_TABLE1 partition at SCN=3025495 with old partition=PART_3025269 and new partition=PART_3025495
+Splitting TARGET_TABLE3 partition at SCN=3025495 with old partition=PART_3025269 and new partition=PART_3025495
+Splitting TARGET_TABLE1 partition at SCN=3025495 with old partition=PART_3025269 and new partition=PART_3025495
+DML to partition_config are complete
+INFO test_data: update 10 rows
+testdata_10rows_upd: rows updated ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: delete 10 child rows
+testdata_10rows_del: rows deleted ok
+INFO test_data: wait for OGG to catchup...
+INFO test_data: split partitions
+
+
+*** partition_split.sql ***
+
+
+Getting partitionc config
+Current SCN=3025725
+Max partition_config SCN=3025495
+Splitting TARGET_TABLE2 partition at SCN=3025725 with old partition=PART_3025495 and new partition=PART_3025725
+Splitting MASTER_SOURCE_TABLE1 partition at SCN=3025725 with old partition=PART_3025495 and new partition=PART_3025725
+Splitting TARGET_TABLE3 partition at SCN=3025725 with old partition=PART_3025495 and new partition=PART_3025725
+Splitting TARGET_TABLE1 partition at SCN=3025725 with old partition=PART_3025495 and new partition=PART_3025725
+DML to partition_config are complete
+INFO poc_e2e: query the result
+
+
+*** source_query.sql ***
+
+
+SOURCE_TABLE2=18
+SOURCE_TABLE3=18
+SOURCE_TABLE1=20
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               MASTER_SOURCE_TABLE1 PART_0               3024835
+TARGET               MASTER_SOURCE_TABLE1 PART_3024835         3025269
+TARGET               MASTER_SOURCE_TABLE1 PART_3025269         3025495
+TARGET               MASTER_SOURCE_TABLE1 PART_3025495         3025725
+TARGET               MASTER_SOURCE_TABLE1 PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE1        PART_0               3024835
+TARGET               TARGET_TABLE1        PART_3024835         3025269
+TARGET               TARGET_TABLE1        PART_3025269         3025495
+TARGET               TARGET_TABLE1        PART_3025495         3025725
+TARGET               TARGET_TABLE1        PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE2        PART_0               3024835
+TARGET               TARGET_TABLE2        PART_3024835         3025269
+TARGET               TARGET_TABLE2        PART_3025269         3025495
+TARGET               TARGET_TABLE2        PART_3025495         3025725
+TARGET               TARGET_TABLE2        PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE3        PART_0               3024835
+TARGET               TARGET_TABLE3        PART_3024835         3025269
+TARGET               TARGET_TABLE3        PART_3025269         3025495
+TARGET               TARGET_TABLE3        PART_3025495         3025725
+TARGET               TARGET_TABLE3        PART_3025725         MAXVALUE
+
+
+MASTER_SOURCE_TABLE1.PART_0=0
+MASTER_SOURCE_TABLE1.PART_3024835=0
+MASTER_SOURCE_TABLE1.PART_3025269=0
+MASTER_SOURCE_TABLE1.PART_3025495=0
+MASTER_SOURCE_TABLE1.PART_3025725=0
+TARGET_TABLE1.PART_0=0
+TARGET_TABLE1.PART_3024835=10
+TARGET_TABLE1.PART_3025269=10
+TARGET_TABLE1.PART_3025495=5
+TARGET_TABLE1.PART_3025725=0
+TARGET_TABLE2.PART_0=0
+TARGET_TABLE2.PART_3024835=10
+TARGET_TABLE2.PART_3025269=10
+TARGET_TABLE2.PART_3025495=7
+TARGET_TABLE2.PART_3025725=0
+TARGET_TABLE3.PART_0=0
+TARGET_TABLE3.PART_3024835=10
+TARGET_TABLE3.PART_3025269=10
+TARGET_TABLE3.PART_3025495=7
+TARGET_TABLE3.PART_3025725=0
+
+
+*** gen_masterdata.sql ***
+
+
+
+Processing:PART_3024835 begin_scn=3024835, end_scn=3025268:
+
+Processing:PART_3025269 begin_scn=3025269, end_scn=3025494:
+
+Processing:PART_3025495 begin_scn=3025495, end_scn=3025724:
+INFO poc_e2e: query the result
+
+
+*** source_query.sql ***
+
+
+SOURCE_TABLE2=18
+SOURCE_TABLE3=18
+SOURCE_TABLE1=20
+
+
+*** partition_query.sql ***
+
+TABLE_OWNER          TABLE_NAME           PARTITION_NAME       HIGH_VALUE
+-------------------- -------------------- -------------------- --------------------------------------------------------------------------------
+TARGET               MASTER_SOURCE_TABLE1 PART_0               3024835
+TARGET               MASTER_SOURCE_TABLE1 PART_3024835         3025269
+TARGET               MASTER_SOURCE_TABLE1 PART_3025269         3025495
+TARGET               MASTER_SOURCE_TABLE1 PART_3025495         3025725
+TARGET               MASTER_SOURCE_TABLE1 PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE1        PART_0               3024835
+TARGET               TARGET_TABLE1        PART_3024835         3025269
+TARGET               TARGET_TABLE1        PART_3025269         3025495
+TARGET               TARGET_TABLE1        PART_3025495         3025725
+TARGET               TARGET_TABLE1        PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE2        PART_0               3024835
+TARGET               TARGET_TABLE2        PART_3024835         3025269
+TARGET               TARGET_TABLE2        PART_3025269         3025495
+TARGET               TARGET_TABLE2        PART_3025495         3025725
+TARGET               TARGET_TABLE2        PART_3025725         MAXVALUE
+TARGET               TARGET_TABLE3        PART_0               3024835
+TARGET               TARGET_TABLE3        PART_3024835         3025269
+TARGET               TARGET_TABLE3        PART_3025269         3025495
+TARGET               TARGET_TABLE3        PART_3025495         3025725
+TARGET               TARGET_TABLE3        PART_3025725         MAXVALUE
+
+
+MASTER_SOURCE_TABLE1.PART_0=0
+MASTER_SOURCE_TABLE1.PART_3024835=30
+MASTER_SOURCE_TABLE1.PART_3025269=30
+MASTER_SOURCE_TABLE1.PART_3025495=5
+MASTER_SOURCE_TABLE1.PART_3025725=0
+TARGET_TABLE1.PART_0=0
+TARGET_TABLE1.PART_3024835=10
+TARGET_TABLE1.PART_3025269=10
+TARGET_TABLE1.PART_3025495=5
+TARGET_TABLE1.PART_3025725=0
+TARGET_TABLE2.PART_0=0
+TARGET_TABLE2.PART_3024835=10
+TARGET_TABLE2.PART_3025269=10
+TARGET_TABLE2.PART_3025495=7
+TARGET_TABLE2.PART_3025725=0
+TARGET_TABLE3.PART_0=0
+TARGET_TABLE3.PART_3024835=10
+TARGET_TABLE3.PART_3025269=10
+TARGET_TABLE3.PART_3025495=7
+TARGET_TABLE3.PART_3025725=0
+
+
+*** gen_masterdata_json.sql ***
+
+
+
+Processing: begin_scn=3024835, end_scn=3025268:
+
+Processing: rowid=AAAR1KAAMAAAACHAAS scnno=3025203
+{"source_table1":{"ID":2611,"NAME":"SwSmtowxlLDqWUDkkUkd","VERSION":1},"source_table2":[{"ID":611,"SOURCE_TABLE1_ID":2611,"NAME":"sjNNHyjQxOVnNwMqxwIL","VERSION":1}],"source_table3":[{"ID":611,"SOURCE_TABLE1_ID":2611,"NAME":"UDccOpbtDnwFHLzZvBCq","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAT scnno=3025206
+{"source_table1":{"ID":2612,"NAME":"DRkzIQgTQLwEYMFHZoHL","VERSION":1},"source_table2":[{"ID":612,"SOURCE_TABLE1_ID":2612,"NAME":"lfWEaUMJyOgANtLdTIvf","VERSION":1}],"source_table3":[{"ID":612,"SOURCE_TABLE1_ID":2612,"NAME":"BXyczCNgAGkhhYudlxIH","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAA scnno=3025209
+{"source_table1":{"ID":2613,"NAME":"eNUeFHhsUBmbMFnlijla","VERSION":1},"source_table2":[{"ID":613,"SOURCE_TABLE1_ID":2613,"NAME":"bxrfnbezrUkyVQJHfgUU","VERSION":1}],"source_table3":[{"ID":613,"SOURCE_TABLE1_ID":2613,"NAME":"EzIMMYTPIgENvAmSozdw","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAB scnno=3025211
+{"source_table1":{"ID":2614,"NAME":"cSrqSwirmHFmjtnoVKvw","VERSION":1},"source_table2":[{"ID":614,"SOURCE_TABLE1_ID":2614,"NAME":"IjMmUXRKPnDHyLKWvqEz","VERSION":1}],"source_table3":[{"ID":614,"SOURCE_TABLE1_ID":2614,"NAME":"fYCrasBRKiOwiqjwpIAi","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAC scnno=3025213
+{"source_table1":{"ID":2615,"NAME":"jlzlTQJejsnBjxnicODe","VERSION":1},"source_table2":[{"ID":615,"SOURCE_TABLE1_ID":2615,"NAME":"FgGydmDnULEfcEkzpLWJ","VERSION":1}],"source_table3":[{"ID":615,"SOURCE_TABLE1_ID":2615,"NAME":"lpStgCeKFmbuoHgNYDYn","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAD scnno=3025215
+{"source_table1":{"ID":2616,"NAME":"bOKLxXAYJKsNDWYlilIi","VERSION":1},"source_table2":[{"ID":616,"SOURCE_TABLE1_ID":2616,"NAME":"ZeiISlsAHImRagViMTSq","VERSION":1}],"source_table3":[{"ID":616,"SOURCE_TABLE1_ID":2616,"NAME":"MWYJJzgXtovyhGvuzCME","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAE scnno=3025217
+{"source_table1":{"ID":2617,"NAME":"gnpkqNwQpqbvIgrieOfM","VERSION":1},"source_table2":[{"ID":617,"SOURCE_TABLE1_ID":2617,"NAME":"ZozpPiMajimtGIaDkUZy","VERSION":1}],"source_table3":[{"ID":617,"SOURCE_TABLE1_ID":2617,"NAME":"qHSBVnhMVbGZrMtwVBKa","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAF scnno=3025219
+{"source_table1":{"ID":2618,"NAME":"wiJvzCysARhVWyNvbgBk","VERSION":1},"source_table2":[{"ID":618,"SOURCE_TABLE1_ID":2618,"NAME":"KSzaugpcJkdhCjupJQuV","VERSION":1}],"source_table3":[{"ID":618,"SOURCE_TABLE1_ID":2618,"NAME":"FPhrZUUTsvggUJArPzYI","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAG scnno=3025221
+{"source_table1":{"ID":2619,"NAME":"nbaDBcKgOHQhvjcknTtn","VERSION":1},"source_table2":[{"ID":619,"SOURCE_TABLE1_ID":2619,"NAME":"bWIeueYSiSyxsUZHrsXo","VERSION":1}],"source_table3":[{"ID":619,"SOURCE_TABLE1_ID":2619,"NAME":"clAoeJQIduerVgnhGyVk","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAH scnno=3025223
+{"source_table1":{"ID":2620,"NAME":"vJdHcqonbzZPFucGfYmY","VERSION":1},"source_table2":[{"ID":620,"SOURCE_TABLE1_ID":2620,"NAME":"YDJDzmfyTvrnBAwEbpcG","VERSION":1}],"source_table3":[{"ID":620,"SOURCE_TABLE1_ID":2620,"NAME":"IpXioHxAEaGfBfouvIGv","VERSION":1}]}
+
+Processing: begin_scn=3025269, end_scn=3025494:
+
+Processing: rowid=AAAR1KAAMAAAACHAAI scnno=3025363
+{"source_table1":{"ID":2621,"NAME":"lgadzVUgjENnNKHNKHED","VERSION":1},"source_table2":[{"ID":621,"SOURCE_TABLE1_ID":2621,"NAME":"MldUaghxICANVCkIKrPX","VERSION":1}],"source_table3":[{"ID":621,"SOURCE_TABLE1_ID":2621,"NAME":"MLnSkOsMnsyItkQMMIbI","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAJ scnno=3025366
+{"source_table1":{"ID":2622,"NAME":"XUuEHxwYCXlWSsWxzWhO","VERSION":1},"source_table2":[{"ID":622,"SOURCE_TABLE1_ID":2622,"NAME":"ZfGCmQZiLLQiLJcTIjqm","VERSION":1}],"source_table3":[{"ID":622,"SOURCE_TABLE1_ID":2622,"NAME":"ldjFkUGtGxalnhKKkTnS","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAK scnno=3025369
+{"source_table1":{"ID":2623,"NAME":"IMGOgNqbbMkkzQTJAMvt","VERSION":1},"source_table2":[{"ID":623,"SOURCE_TABLE1_ID":2623,"NAME":"OATysbtwdPmRwxASrahM","VERSION":1}],"source_table3":[{"ID":623,"SOURCE_TABLE1_ID":2623,"NAME":"hqeGOuvntGDzTHRBoAKK","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAL scnno=3025372
+{"source_table1":{"ID":2624,"NAME":"ddsYKlDrqBWhCZzduPmm","VERSION":1},"source_table2":[{"ID":624,"SOURCE_TABLE1_ID":2624,"NAME":"ixvxXETlxLcVDZlrbhxF","VERSION":1}],"source_table3":[{"ID":624,"SOURCE_TABLE1_ID":2624,"NAME":"vSUwgDcOWEoWxGHBiLKH","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAM scnno=3025374
+{"source_table1":{"ID":2625,"NAME":"xgMuaIYeHxiqhHjOAYMt","VERSION":1},"source_table2":[{"ID":625,"SOURCE_TABLE1_ID":2625,"NAME":"JHIuSkWlkvzYNKAVatbo","VERSION":1}],"source_table3":[{"ID":625,"SOURCE_TABLE1_ID":2625,"NAME":"AKFEMXlxeTvrSSCPQjgL","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAN scnno=3025378
+{"source_table1":{"ID":2626,"NAME":"EXDVHiMHBKCBiRyVfusx","VERSION":1},"source_table2":[{"ID":626,"SOURCE_TABLE1_ID":2626,"NAME":"ERdDOCoetgheRfJHtRLN","VERSION":1}],"source_table3":[{"ID":626,"SOURCE_TABLE1_ID":2626,"NAME":"iozNltMyMvMVBJOSZszB","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAO scnno=3025380
+{"source_table1":{"ID":2627,"NAME":"PtlSpMJciJiNirKpKpBb","VERSION":1},"source_table2":[{"ID":627,"SOURCE_TABLE1_ID":2627,"NAME":"xBzuqwwrXJJIKxfXAIpT","VERSION":1}],"source_table3":[{"ID":627,"SOURCE_TABLE1_ID":2627,"NAME":"DuLvnXKLzQuXtzwFpiJM","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAP scnno=3025383
+{"source_table1":{"ID":2628,"NAME":"VSktHNlizAJNkNWkYKGp","VERSION":1},"source_table2":[{"ID":628,"SOURCE_TABLE1_ID":2628,"NAME":"MrOQIFOAgokVaaNKHxdn","VERSION":1}],"source_table3":[{"ID":628,"SOURCE_TABLE1_ID":2628,"NAME":"XUZjeRIRJCvCaYdeXytn","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAQ scnno=3025386
+{"source_table1":{"ID":2629,"NAME":"CWEabWYrLAXwegZrJXiS","VERSION":1},"source_table2":[{"ID":629,"SOURCE_TABLE1_ID":2629,"NAME":"HJCGNOzxZHxKUiNyrxbp","VERSION":1}],"source_table3":[{"ID":629,"SOURCE_TABLE1_ID":2629,"NAME":"SgNojUtjvLwfIwtPkEXA","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAR scnno=3025389
+{"source_table1":{"ID":2630,"NAME":"dVCfjlvVeAhbDvGrdwpI","VERSION":1},"source_table2":[{"ID":630,"SOURCE_TABLE1_ID":2630,"NAME":"ZwchDrZEmlzUTdVBRJKN","VERSION":1}],"source_table3":[{"ID":630,"SOURCE_TABLE1_ID":2630,"NAME":"VbLyHCWmsjYJAAhhNckW","VERSION":1}]}
+
+Processing: begin_scn=3025495, end_scn=3025724:
+
+Processing: rowid=AAAR1KAAMAAAACHAAA scnno=3025597
+{"source_table1":{"ID":2613,"NAME":"eNUeFHhsUBmbMFnlijla","VERSION":6},"source_table2":[{"ID":613,"SOURCE_TABLE1_ID":2613,"NAME":"bxrfnbezrUkyVQJHfgUU","VERSION":1}],"source_table3":[{"ID":613,"SOURCE_TABLE1_ID":2613,"NAME":"EzIMMYTPIgENvAmSozdw","VERSION":1}]}
+
+Processing: rowid=AAAR1KAAMAAAACHAAS scnno=3025696
+{"source_table1":{"ID":2611,"NAME":"SwSmtowxlLDqWUDkkUkd","VERSION":1},"source_table2":null,"source_table3":null}
+
+Processing: rowid=AAAR1KAAMAAAACHAAT scnno=3025699
+{"source_table1":{"ID":2612,"NAME":"DRkzIQgTQLwEYMFHZoHL","VERSION":1},"source_table2":null,"source_table3":null}

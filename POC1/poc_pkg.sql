@@ -1,6 +1,7 @@
 CREATE OR REPLACE PACKAGE target.poc_pkg AS 
     PROCEDURE split_partitions; 
     procedure gen_master_data (partname varchar2, start_scn number, end_scn number);
+	procedure gen_master_data_json (start_scn number, end_scn number);
 END poc_pkg; 
 /
 show errors
@@ -191,6 +192,52 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 		commit;
 
 	end gen_master_data;
+
+
+	procedure gen_master_data_json (start_scn number, end_scn number)
+	is
+		cursor c_master (startscn number, endscn number) is
+			select rid, max(scnno) scnno 
+			from target.master_source_table1 
+			where SCNNO between startscn and endscn 
+			group by rid order by 2;
+		str varchar2(2000);
+		l_json varchar2(2000);
+
+	begin
+
+		dbms_output.put_line(CHR(10) || 'Processing: begin_scn=' || start_scn || ', end_scn=' || end_scn || ':');
+
+		FOR r in c_master (start_scn, end_scn) 
+		LOOP
+			
+			dbms_output.put_line(CHR(10) || 'Processing: rowid=' || r.rid || ' scnno=' || r.scnno);
+
+			str := '
+				select json_object(
+					KEY ''source_table1'' VALUE JSON_OBJECT (s1.*),
+					KEY ''source_table2'' VALUE (
+						SELECT JSON_ARRAYAGG (json_object(s2.*))
+						from source.source_table2@source_link as of scn ' || r.scnno || ' s2 
+						where s1.id = s2.source_table1_id
+					),
+					KEY ''source_table3'' VALUE (
+						SELECT JSON_ARRAYAGG (json_object(s3.*))
+						from source.source_table3@source_link as of scn ' || r.scnno || ' s3 
+						where s1.id = s3.source_table1_id
+					)
+				)
+				from source.source_table1@source_link as of scn ' || r.scnno || ' s1
+				where s1.rowid = ''' || r.rid || '''
+			';
+
+			execute immediate str into l_json;
+			dbms_output.put_line(l_json);
+
+		END LOOP;
+			
+	end gen_master_data_json;
+
 
 end poc_pkg;
 /

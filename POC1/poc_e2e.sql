@@ -1,7 +1,7 @@
 
 set serveroutput on lines 2000 pages 1000 trimspool on feedback off
 
-spool output_poc_e2e.lst
+spool output_poc1_e2e.lst
 
 exec dbms_output.put_line(CHR(10));
 exec dbms_output.put_line( '*** testdata_e2e_test1.sql ***' );
@@ -10,7 +10,7 @@ exec dbms_output.put_line(CHR(10));
 exec dbms_output.put_line( 'INFO test_reset: update poc_pkg...' );
 @poc_pkg.sql
 
-!./ogg_start.sh
+!$POC_HOME/ogg/ogg_start.sh
 exec dbms_output.put_line( 'INFO test_reset: wait for OGG to start...' );
 exec sys.dbms_session.sleep(15);
 
@@ -30,7 +30,7 @@ exec dbms_output.put_line( 'INFO test_reset: split partition now to avoid writin
 @partition_split
 
 -- be sure ogg is started
-!./ogg_start.sh
+!$POC_HOME/ogg/ogg_start.sh
 exec dbms_output.put_line( 'INFO test_reset: wait for OGG to start...' );
 exec sys.dbms_session.sleep(15);
 
@@ -71,6 +71,7 @@ exec dbms_output.put_line( 'INFO poc_e2e: query the result' );
 @source_query
 @partition_query
 
-@generate_json.sql
+@gen_masterdata.sql
+@gen_masterdata_json.sql
 
 spool off;

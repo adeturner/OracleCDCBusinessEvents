@@ -38,7 +38,35 @@ We partition the OGG target tables by SCN range, and split on interval, e.g. 5, 
 
 This PoC presents the method for tables s1,s2,s3 above
 
-There appears to be a constraint with flashback query that SCN must be hard coded at parse time which implies row by row processing is required; the algorithm offers optimisation to mitigate that.
+NOTE: There appears to be a constraint with flashback query that SCN must be hard coded at parse time which implies row by row processing is required.
+
+POC1 describes the original row by row approach to mitigate the flashback query. During writing it was felt that it was too intrusive on the source database, partly because of the flashback query problem.
+
+Example POC1 output is shown below, with each business object comprising the master/parent table record supported by arrays of detail/child tables
+
+```code
+    {
+        "source_table1": {
+            "ID": 2540,
+            "NAME": "reDfdpuRUiSBUJjnwZDr",
+            "VERSION": 1
+        },
+        "source_table2": [{
+            "ID": 540,
+            "SOURCE_TABLE1_ID": 2540,
+            "NAME": "tbosRMEfJuqTIWqbqMiT",
+            "VERSION": 1
+        }],
+        "source_table3": [{
+            "ID": 540,
+            "SOURCE_TABLE1_ID": 2540,
+            "NAME": "koOtWZEeMyjmpheIqHLn",
+            "VERSION": 1
+        }]
+    }
+```
+
+It is a short step from here to put each record on an AQ, or to an API using UTL_HTTP
 
 ### Algorithm
 
