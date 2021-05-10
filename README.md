@@ -28,6 +28,13 @@ The POC2 high level summary:
 - The POC readme shows the JSON that is produced to stdout: https://github.com/adeturner/OracleCDCBusinessEvents/tree/main/POC2
 - The JSON can be sent to an AQ queue, API etc directly from PLSQL (not shown)
 
+POC2 to do list:
+
+- alter session set cursor_sharing=FORCE (fix for SCNs in dynamic sql, added in poc_e2e.sql now)
+- statistics strategy
+- diagram for README
+- JSON generation fix for optype="D" (currently suboptimal)
+
 ## Setup
 
 1. Follow 1_dockerSetup.md

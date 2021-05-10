@@ -68,6 +68,7 @@ exec dbms_output.put_line( 'INFO poc_e2e: query the result' );
 @source_query
 @partition_query
 
+alter session set cursor_sharing=force;
 @gen_masterdata.sql
 @gen_masterdata_json.sql
 
