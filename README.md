@@ -13,6 +13,9 @@ In these scenarios we are unlikely to maintain transactional consistency of busi
 
 **In this repo we demonstrate an eventually consistent method to generate a proportionately low volume of transactionally consistent business events from a high volume change data capture stream**
 
+
+![Overview](/Overview.JPG "Overview of approach")
+
 We present two POCs
 
 - POC #1 (obsolete) complete, but mothballed as I wasn't happy with it (fail fast)
