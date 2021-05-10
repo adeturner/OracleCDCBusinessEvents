@@ -255,7 +255,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 				dbms_output.put_line('Unexpected metadata level!');
 			END CASE;
 
-			str := 'select optype, rid, max(scnno) scnno from target.' || tab || ' 
+			str := 'select /*+ opt_param(''cursor_sharing=force'') */ optype, rid, max(scnno) scnno from target.' || tab || ' 
 			        where SCNNO between ' || start_scn || ' and ' || end_scn || ' group by rid, optype order by scnno';
 
 			OPEN r FOR str;
@@ -318,7 +318,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	IS
 	begin
 		outSqlString := '
-			select json_object( 
+			select /*+ opt_param(''cursor_sharing=force'') */ json_object( 
 					KEY ''optype'' VALUE ''' || l_optype || ''', 
 					KEY ''customer'' VALUE JSON_OBJECT (m.*) ';	-- Note trailing "," is excluded
 	end get_master_json_hdr_begin;
@@ -395,7 +395,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 		str2 varchar2(2000);
 		tmp varchar2(2000);
 		l_rid ROWID;
-		l_scnno number;
+		l_max_scnno number;
 		l_json varchar2(32000);
 		cnt number;
 
@@ -413,7 +413,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 
 			mastertab := 'MASTER_' || m1.master_table;
 
-			str := 'select rid, max(scnno) scnno 
+			str := 'select /*+ opt_param(''cursor_sharing=force'') */ rid, max(scnno) scnno 
 			from target.master_' || m1.master_table || ' 
 			where SCNNO between ' || start_scn || ' and ' || end_scn || ' 
 			group by rid order by 2';
@@ -423,7 +423,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 			OPEN r FOR str;
 			LOOP
 
-				FETCH r INTO l_rid, l_scnno;
+				FETCH r INTO l_rid, l_max_scnno;
 				EXIT WHEN r%NOTFOUND;
 				dbms_output.put_line(CHR(10) || 'Processing: rid=' || l_rid || ' for max_scnno=' || l_scnno);
 
@@ -439,11 +439,11 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 					CASE m2.child_level
 					WHEN 0 THEN
 
-						-- optype = {D, I, or U}, there are multiple records, we want the D if it exists
-						tmp := 'select 1 
+						-- Need to simplify optype = {D, I, or U}, as we will either delete or upsert in target
+						tmp := 'select /*+ opt_param(''cursor_sharing=force'') */ 1 
 								from target.' || mastertab || ' 
 								where rid=''' || l_rid || ''' 
-								and scnno=' || l_scnno || '
+								and scnno=' || l_max_scnno || '
 								and optype = ''D''';
 						begin
 							execute immediate tmp INTO l_optype;
@@ -461,7 +461,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 
 					WHEN 1 THEN 
 						str2 := '';
-						get_child_json_query_l1 (m2.childL1_table, m2.childL1_fk_col, l_scnno, l_rid, str2);
+						get_child_json_query_l1 (m2.childL1_table, m2.childL1_fk_col, l_max_scnno, l_rid, str2);
 						str1 := str1 || str2;
 
 					WHEN 2 THEN 
@@ -472,7 +472,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 									m2.childL1_fk_col, 
 									m2.childL2_table, 
 									m2.childL2_fk_col, 
-									l_scnno, l_rid, str2);
+									l_max_scnno, l_rid, str2);
 						str1 := str1 || str2;
 
 					ELSE
@@ -483,7 +483,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 
 				END LOOP;
 
-				get_master_json_hdr_end(m1.master_table, l_scnno, l_rid, str2);
+				get_master_json_hdr_end(m1.master_table, l_max_scnno, l_rid, str2);
 				str1 := str1 || str2;
 				-- dbms_output.put_line(str1);
 				execute immediate str1 into l_json;
@@ -505,7 +505,7 @@ show errors
 
 
 /*
-
+ sample generated code
 			str := '
 				select json_object(
 					KEY ''customer'' VALUE JSON_OBJECT (s1.*),
