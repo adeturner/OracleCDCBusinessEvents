@@ -425,7 +425,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 
 				FETCH r INTO l_rid, l_max_scnno;
 				EXIT WHEN r%NOTFOUND;
-				dbms_output.put_line(CHR(10) || 'Processing: rid=' || l_rid || ' for max_scnno=' || l_scnno);
+				dbms_output.put_line(CHR(10) || 'Processing: rid=' || l_rid || ' for max_scnno=' || l_max_scnno);
 
 				cnt := 0;
 				FOR m2 in c_metadata (m1.master_table)
