@@ -11,8 +11,9 @@ But For some databases change data capture generates a large amount of change vo
 
 In these scenarios we are unlikely to maintain transactional consistency of business objects, as individual CDC records may not be processed in order.
 
-**In this repo we demonstrate an eventually consistent method to generate a proportionately low volume of transactionally consistent business events from a high volume change data capture stream**
+**We demonstrate an eventually consistent method to generate a proportionately low volume of transactionally consistent business events from a high volume change data capture stream**
 
+The following diagram details the process; note Source and Target can either be separate or the same database.
 
 ![Overview](/Overview.JPG "Overview of approach")
 
