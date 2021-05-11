@@ -1,7 +1,29 @@
 
-set serveroutput on lines 2000 pages 1000 trimspool on
+set serveroutput on lines 2000 pages 1000 trimspool on feedback on
 exec dbms_output.put_line(CHR(10));
 exec dbms_output.put_line( '*** partition_drop.sql ***' );
+
+
+DECLARE
+  CURSOR c1 IS 
+    SELECT table_name, partition_name
+    from dba_tab_partitions 
+    where table_owner = 'TARGET';
+  l_count number;
+  l_name varchar2(2);
+BEGIN
+  FOR p IN c1
+  LOOP
+    begin
+        EXECUTE IMMEDIATE 'alter table target.' || p.table_name || ' truncate PARTITION ' || p.partition_name;
+        dbms_output.put_line( 'Truncating partition target_table1.' || p.partition_name);
+        exception
+        when others then
+        raise;
+    end;
+  END LOOP;
+END;
+/
 
 DECLARE
   CURSOR c1 IS 

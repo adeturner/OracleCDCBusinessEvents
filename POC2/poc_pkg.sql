@@ -1,39 +1,8 @@
 CREATE OR REPLACE PACKAGE target.poc_pkg AS 
+
     PROCEDURE split_partitions; 
     procedure gen_master_data (partname varchar2, start_scn number, end_scn number);
 	procedure gen_master_data_json (start_scn number, end_scn number);
-
-	/*
-	procedure get_master_insert_hdr (master_table varchar2);
-	procedure get_master_select1 (
-				optype IN varchar2, 
-				master_table IN varchar2, 
-				master_pk_col IN varchar2, 
-				rid IN ROWID, 
-				scnno IN number, 
-				outSqlString OUT varchar2);
-	procedure get_master_select2 (
-				optype IN varchar2, 
-				master_table IN varchar2, 
-				master_pk_col IN varchar2, 
-				childL1_table IN varchar2, 
-				childL1_fk_col IN varchar2, 
-				rid IN ROWID, 
-				scnno IN number, 
-				outSqlString OUT varchar2);
-	procedure get_master_select3 (
-				optype IN varchar2, 
-				master_table IN varchar2, 
-				master_pk_col IN varchar2, 
-				childL1_table IN varchar2, 
-				childL1_pk_col IN varchar2, 
-				childL1_fk_col IN varchar2, 
-				childL2_table IN varchar2, 
-				childL2_fk_col IN varchar2, 
-				rid IN ROWID, 
-				scnno IN number, 
-				outSqlString OUT varchar2);
-	*/
 
 END poc_pkg; 
 /
@@ -190,7 +159,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 					 source.' || childL2_table || '@source_link as of scn ' || scnno || ' childL2
 				where childL2.rowid = ''' || rid || '''
 				and   master.' || master_pk_col || ' = childL1.' || childL1_fk_col || '
-				and   master.' || childL1_pk_col || ' = childL2.' || childL2_fk_col
+				and   childL1.' || childL1_pk_col || ' = childL2.' || childL2_fk_col
 				;
 	
 	end get_master_select3;
@@ -485,7 +454,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 
 				get_master_json_hdr_end(m1.master_table, l_max_scnno, l_rid, str2);
 				str1 := str1 || str2;
-				-- dbms_output.put_line(str1);
+				dbms_output.put_line(str1);
 				execute immediate str1 into l_json;
 				dbms_output.put_line(CHR(10));
 				dbms_output.put_line(l_json);
