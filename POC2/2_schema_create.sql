@@ -11,6 +11,8 @@ CREATE USER target IDENTIFIED BY target;
 GRANT CONNECT, RESOURCE, DBA TO target;
 GRANT SELECT ANY DICTIONARY to target;
 ALTER USER target DEFAULT TABLESPACE users;
+grant alter session to target;
+rant execute on dbms_flashback to target;
 
 CREATE PUBLIC DATABASE LINK source_link CONNECT TO source IDENTIFIED BY source USING 'ORCLPDB1';
 

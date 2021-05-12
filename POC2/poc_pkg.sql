@@ -94,11 +94,13 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	end split_partitions;
 	
 
-	procedure get_master_insert_hdr (master_table varchar2, outSqlString OUT varchar2) 
+	procedure get_master_insert (master_table varchar2, outSqlString OUT varchar2) 
 	IS
 	begin
-		outSqlString := 'insert into target.MASTER_' || master_table || ' (optype, rid, scnno)';
-	end get_master_insert_hdr;
+		-- /*+ opt_param(''cursor_sharing=force'') */
+		outSqlString := 'insert  into target.MASTER_' || master_table || ' (optype, rid, scnno)
+						 values (:optype, :rid, :scnno)';
+	end get_master_insert;
 
 	procedure get_master_select1 (
 				optype IN varchar2, 
@@ -110,9 +112,9 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	IS
 	begin
 
-		outSqlString := 'select ''' || optype || ''', master.rowid, ' || scnno || ' 
-				from source.'|| master_table || '@source_link as of scn ' || scnno || ' master
-				where master.rowid = ''' || rid || '''';
+		outSqlString := 'select ''' || optype || ''', master.rowid, :scnno
+				from source.'|| master_table || '@source_link master
+				where master.rowid = :rid';
 	
 	end get_master_select1;
 
@@ -129,10 +131,10 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	begin
 
 		outSqlString := 
-		       'select ''' || optype || ''', master.rowid, ' || scnno || ' 
-				from source.'|| master_table || '@source_link as of scn ' || scnno || ' master,
-					 source.' || childL1_table || '@source_link as of scn ' || scnno || ' child
-				where child.rowid = ''' || rid || '''
+		       'select ''' || optype || ''', master.rowid, :scnno
+				from source.'|| master_table || '@source_link  master,
+					 source.' || childL1_table || '@source_link child
+				where child.rowid = :rid
 				and   master.' || master_pk_col || ' = child.' || childL1_fk_col;
 	
 	end get_master_select2;
@@ -151,13 +153,14 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 				outSqlString OUT varchar2) 
 	is
 	begin
+		-- 				where childL2.rowid = ''' || rid || '''
 
 		outSqlString := 
-		       'select ''' || optype || ''', master.rowid, ' || scnno || ' 
-				from source.'|| master_table || '@source_link as of scn ' || scnno || ' master,
-					 source.' || childL1_table || '@source_link as of scn ' || scnno || ' childL1,
-					 source.' || childL2_table || '@source_link as of scn ' || scnno || ' childL2
-				where childL2.rowid = ''' || rid || '''
+		       'select ''' || optype || ''', master.rowid, :scnno
+				from source.'|| master_table || '@source_link master,
+					 source.' || childL1_table || '@source_link  childL1,
+					 source.' || childL2_table || '@source_link childL2
+				where childL2.rowid = :rid
 				and   master.' || master_pk_col || ' = childL1.' || childL1_fk_col || '
 				and   childL1.' || childL1_pk_col || ' = childL2.' || childL2_fk_col
 				;
@@ -182,12 +185,22 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 		l_rid ROWID;
 		l_scnno number;
 
+		-- mirror type for master_table
+		TYPE t_rec IS RECORD (
+			optype char(1),
+			rid   ROWID, 
+			SCNNO number);
+
+		rec t_rec;
+   		-- TYPE t_tab IS TABLE OF t_rec INDEX BY BINARY_INTEGER;
+
 	begin
 
-		dbms_output.put_line(CHR(10) || 'Processing:' || partname || ' begin_scn=' || start_scn || ', end_scn=' || end_scn || ':');
+		dbms_output.put_line(CHR(10) || 'Processing:' || partname || ' start_scn=' || start_scn || ', end_scn=' || end_scn || ':');
 
 		-- empty the master partition
-		execute immediate ('alter table target.MASTER_CUSTOMER truncate partition ' || partname);
+		execute immediate ('delete from target.MASTER_CUSTOMER');
+		commit;
 
 		/*
 		For each rowid that is updated we want to get the max(scnno), and then look back to the source_table at that SCN
@@ -224,16 +237,19 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 				dbms_output.put_line('Unexpected metadata level!');
 			END CASE;
 
-			str := 'select /*+ opt_param(''cursor_sharing=force'') */ optype, rid, max(scnno) scnno from target.' || tab || ' 
-			        where SCNNO between ' || start_scn || ' and ' || end_scn || ' group by rid, optype order by scnno';
+			str := 'select optype, rid, max(scnno) scnno 
+					from target.' || tab || ' 
+			        where SCNNO between :start_scn and :end_scn 
+					group by rid, optype 
+					order by scnno';
 
-			OPEN r FOR str;
+			OPEN r FOR str using start_scn, end_scn;
 			LOOP
 				FETCH r INTO l_optype, l_rid, l_scnno;
 				EXIT WHEN r%NOTFOUND;
 
 				str1 := '';
-				get_master_insert_hdr(c_master_table, str1);
+				-- get_master_insert_hdr(c_master_table, str1);
 
 				CASE m.child_level
 				WHEN 0 THEN
@@ -273,8 +289,26 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 				END CASE;
 
 				str2 := str1 || CHR(10) || tmp;
+				dbms_output.put_line(str2 || ' using ' || to_char(l_scnno) || ', ' || l_rid);
+
+				/*
+					https://stewashton.wordpress.com/2018/07/23/optimistic-locking-8-double-checking-with-flashback/
+					The EXECUTE privilege must be granted on DBMS_FLASHBACK;	
+					The SCN parameter of ENABLE_AT_SYSTEM_CHANGE_NUMBER must be increasing!
+						.... If it decreases, we get hard parses and extra child cursors.
+					ORA-01466: unable to read data - table definition has changed
+						.... caused partition splitting, so separate insert from select
+				*/
+			    sys.dbms_flashback.enable_at_system_change_number(l_scnno);
+				execute immediate str2 into rec using l_scnno, l_rid;
+			    sys.dbms_flashback.disable;
+
+				get_master_insert(c_master_table, str2);
 				dbms_output.put_line(str2);
-				execute immediate str2;
+				execute immediate str2 using rec.optype, rec.rid, rec.scnno;
+				
+				-- Must commit to avoid ORA-08183: Flashback cannot be enabled in the middle of a transaction
+				commit; 
 
 			END LOOP;
 			CLOSE r;
@@ -287,7 +321,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	IS
 	begin
 		outSqlString := '
-			select /*+ opt_param(''cursor_sharing=force'') */ json_object( 
+			select json_object( 
 					KEY ''optype'' VALUE ''' || l_optype || ''', 
 					KEY ''customer'' VALUE JSON_OBJECT (m.*) ';	-- Note trailing "," is excluded
 	end get_master_json_hdr_begin;
@@ -301,8 +335,8 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 	begin
 		outSqlString := '
 							)
-				from source.' || master_table || '@source_link as of scn ' || scnno || ' m
-				where m.rowid = ''' || rid || '''';
+				from source.' || master_table || '@source_link m
+				where m.rowid = :rid';
 	end get_master_json_hdr_end;
 
 	procedure get_child_json_query_L1 (
@@ -316,7 +350,7 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 		outSqlString := '
 					,KEY ''' || child_table || ''' VALUE (
 						SELECT JSON_ARRAYAGG (json_object(*))
-						from source.' || child_table || '@source_link as of scn ' || scnno || '  
+						from source.' || child_table || '@source_link 
 						where m.id = ' || child_table || '.' || child_fk || '
 					)'; -- Note trailing "," is excluded
 	end get_child_json_query_L1;
@@ -335,8 +369,8 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 		outSqlString := '
 					,KEY ''' || child_table_l2 || ''' VALUE (
 						SELECT JSON_ARRAYAGG (json_object(l2.*))
-						from source.' || child_table_l1 || '@source_link as of scn ' || scnno || ' l1,
-						     source.' || child_table_l2 || '@source_link as of scn ' || scnno || ' l2 
+						from source.' || child_table_l1 || '@source_link l1,
+						     source.' || child_table_l2 || '@source_link l2 
 						where m.id = l1.' || child_l1_fk || '
 						and   l1.' || child_l1_pk || ' = l2.' || child_l2_fk || '
 					)'; -- Note trailing "," is excluded
@@ -455,7 +489,10 @@ CREATE OR REPLACE PACKAGE BODY target.poc_pkg AS
 				get_master_json_hdr_end(m1.master_table, l_max_scnno, l_rid, str2);
 				str1 := str1 || str2;
 				dbms_output.put_line(str1);
-				execute immediate str1 into l_json;
+				commit;
+			    sys.dbms_flashback.enable_at_system_change_number(l_max_scnno);
+				execute immediate str1 into l_json using l_rid;
+				sys.dbms_flashback.disable;
 				dbms_output.put_line(CHR(10));
 				dbms_output.put_line(l_json);
 

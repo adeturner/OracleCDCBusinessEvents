@@ -18,7 +18,8 @@ DECLARE
     SELECT table_owner, table_name, partition_name
     from dba_tab_partitions 
     where table_owner = 'TARGET'
-    and table_name like '%';
+    and table_name like '%'
+    order by 1,2,3;
   l_count number;
   l_name varchar2(200);
   str varchar2(2000);
